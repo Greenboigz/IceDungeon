@@ -15,6 +15,7 @@ class Tile {
     this._image = image;
 
     this._item = null;
+    this._hasItem = false;
     this._storable = false;
     this._traversible = false;
     this._interrupting = false;
@@ -54,13 +55,47 @@ class Tile {
   }
 
   /**
+   * Gets the item on the tile
+   * @return {Item}
+   */
+  get item() {
+    if (this._hasItem) {
+      return this._item;
+    }
+  }
+
+  /**
    * Sets the item associated to the tile
    * @param {Item} item
    */
   set item(item) {
-    if (this.isStorable()) {
+    if (this.isStorable() && !this._hasItem && item != null) {
       this._item = item;
+      this._hasItem = true;
+    } else if (!this.isStorable()) {
+      throw "This tile cannot store items";
     }
+  }
+
+  /**
+   * Removes the item from the tile
+   * @return {Item}
+   */
+  removeItem() {
+    if (this.hasItem()) {
+      var item = this._item;
+      this._item = null;
+      this._hasItem = false;
+      return item;
+    }
+  }
+
+  /**
+   * Checks if the tile is storing an item
+   * @return {boolean}
+   */
+  hasItem() {
+    return this._hasItem;
   }
 
   /**
@@ -103,22 +138,32 @@ class Tile {
      * @return {Tile}
      */
     static createTile(x, y, character) {
+      var tile;
       switch (character) {
         case 'w':
-          return new Wall(x, y);
+          tile = new Wall(x, y);
           break;
         case ' ':
-          return new Space(x, y);
+        case 't':
+        case 'T':
+          tile = new Space(x, y);
+          if (character == 't') {
+            tile.item = new Token();
+          } else if (character == 'T') {
+            tile.item = new BigToken();
+          }
           break;
         case 's':
-          return new Spike(x, y);
+          tile = new Spike(x, y);
           break;
         case 'b':
-          return new Barrier(x, y);
+          tile = new Barrier(x, y);
           break;
         default:
-          return new Space(x, y);
+          tile = new Space(x, y);
       }
+
+      return tile;
     }
 
 }
@@ -146,6 +191,7 @@ class Space extends Tile {
   constructor(x, y) {
     super(x, y, 1, " ", "space");
     this._traversible = true;
+    this._storable = true;
   }
 
 }
@@ -161,6 +207,7 @@ class Spike extends Tile {
     super(x, y, 2, "s", "spike");
     this._interrupting = true;
     this._traversible = true;
+    this._storable = true;
     this._deadly = true;
   }
 

@@ -19,6 +19,8 @@ class Turtle {
     this._moving = false;
     this._alive = true;
     this._hiding = false;
+    this._points = 0;
+    this._coins = 0;
   }
 
   /**
@@ -42,6 +44,7 @@ class Turtle {
        this._loc = Vector.add(this._loc, Vector.scale(this._direction.toVector(), 1/DIV_SIZE));
        if (!this.isBetween()) {
          this._gridLoc = this._loc;
+         this.consume();
          if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
            this._moving = false;
            this.die();
@@ -52,6 +55,18 @@ class Turtle {
      } else {
        this._moving = false;
      }
+    }
+  }
+
+  /**
+   * Consumes the item on the tile if the tile contains an item
+   */
+  consume() {
+    var tile = this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
+    if (tile.hasItem()) {
+      var item = tile.removeItem();
+      this._points += item.points;
+      this._coins += item.coins;
     }
   }
 

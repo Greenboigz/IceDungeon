@@ -1,6 +1,6 @@
 var TEST_LEVEL = "wwwwwwwwwwwwwww\n" +
-                 "w     w   w   w\n" +
-                 "w www www www w\n" +
+                 "w     wTttw   w\n" +
+                 "w www wwwtwww w\n" +
                  "w             w\n" +
                  "w           www\n" +
                  "w             w\n" +

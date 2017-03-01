@@ -1,5 +1,4 @@
 var PIXELS_PER_DIV = 32;
-var IMAGE_FILES = ["wall", "space", "barrier", "turtle1", "turtle2"];
 
 class View {
 
@@ -36,6 +35,8 @@ class View {
     this.imageHandler.loadImage("space", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**
@@ -62,7 +63,11 @@ class View {
     var x, y;
     for (x = 0; x < this.map.width; x++) {
       for (y = 0; y < this.map.height; y++) {
-        this.imageHandler.drawImage(this.map.getTile(x,y).image, x * PIXELS_PER_DIV, (this.map.height - y - 1) * PIXELS_PER_DIV, 0);
+        var tile = this.map.getTile(x,y)
+        this.imageHandler.drawImage(tile.image, x * PIXELS_PER_DIV, (this.map.height - y - 1) * PIXELS_PER_DIV, 0);
+        if (tile.hasItem()) {
+          this.imageHandler.drawImage(tile.item.image, x * PIXELS_PER_DIV, (this.map.height - y - 1) * PIXELS_PER_DIV, 0);
+        }
       }
     }
   }

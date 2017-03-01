@@ -1,5 +1,3 @@
-var TOKEN = 0, BIG_TOKEN = 1;
-
 class Item {
 
   /**
@@ -44,9 +42,6 @@ class Token extends Item {
 
   /**
    * Builds the token object
-   * @param {number} points
-   * @param {number} coins
-   * @param {string} image
    */
   constructor() {
     super(1, 0, "token");
@@ -58,26 +53,20 @@ class BigToken extends Item {
 
   /**
    * Builds the big token object
-   * @param {number} points
-   * @param {number} coins
-   * @param {string} image
    */
-  constructor(x, y) {
-    super(10, 0, "bigtoken");
+  constructor() {
+    super(10, 0, "big_token");
   }
 
 }
 
-class Coin extends Item {
+class Money extends Item {
 
   /**
-   * Builds the big token object
-   * @param {number} points
-   * @param {number} coins
-   * @param {string} image
+   * Builds the money object
    */
   constructor(x, y) {
-    super(0, 1, "bigtoken");
+    super(0, 1, "money");
   }
 
 }
