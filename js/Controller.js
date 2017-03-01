@@ -42,15 +42,19 @@ function print(param) {
 }
 
 function init() {
-  map = Map.loadFromFile("./maps/Map1.txt")
+  map = Map.loadFromString(TEST_LEVEL);
   turtle = map.turtle;
   view = new View(this.map);
 
   keypadListener = new KeypadListener();
+  keypadListener.addKeyListener("space", 32);
+
   keypadListener.getKeyListener("up").addKeyDownEvent(callDownNorth);
   keypadListener.getKeyListener("right").addKeyDownEvent(callDownEast);
   keypadListener.getKeyListener("down").addKeyDownEvent(callDownSouth);
   keypadListener.getKeyListener("left").addKeyDownEvent(callDownWest);
+  keypadListener.getKeyListener("space").addKeyDownEvent(callHide);
+  keypadListener.getKeyListener("space").addKeyUpEvent(callUnhide);
 
   console.log(map.turtle.getLocation());
 }
@@ -71,20 +75,12 @@ function callDownWest() {
   turtle.turn(Direction.WEST());
 }
 
-function callUpNorth() {
-  turtle.unturn(Direction.NORTH());
+function callHide() {
+  turtle.hide();
 }
 
-function callUpEast() {
-  turtle.unturn(Direction.EAST());
-}
-
-function callUpSouth() {
-  turtle.unturn(Direction.SOUTH());
-}
-
-function callUpWest() {
-  turtle.unturn(Direction.WEST());
+function callUnhide() {
+  turtle.unhide();
 }
 
 function repeat() {

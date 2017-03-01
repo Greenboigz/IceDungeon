@@ -6,11 +6,19 @@ class Tile {
    * @param {number} y
    * @param {number} type
    * @param {string} string
+   * @param {string} image
    */
-  constructor(x, y, type, string) {
+  constructor(x, y, type, string, image) {
     this._loc = new Vector(x,y);
     this._type = type;
     this._string = string;
+    this._image = image;
+
+    this._item = null;
+    this._storable = false;
+    this._traversible = false;
+    this._interrupting = false;
+    this._deadly = false;
   }
 
   /**
@@ -42,7 +50,25 @@ class Tile {
    * @return {string}
    */
   get image() {
-    throw "Not Implemented";
+    return this._image;
+  }
+
+  /**
+   * Sets the item associated to the tile
+   * @param {Item} item
+   */
+  set item(item) {
+    if (this.isStorable()) {
+      this._item = item;
+    }
+  }
+
+  /**
+   * Checks if the tile can store items
+   * @return {boolean}
+   */
+  isStorable() {
+    return this._storable;
   }
 
   /**
@@ -50,7 +76,7 @@ class Tile {
    * @return {boolean}
    */
    isTraversible() {
-     throw "isTraversible method not implemented";
+     return this._traversible;
    }
 
    /**
@@ -58,7 +84,7 @@ class Tile {
     * @return {boolean}
     */
    isInterrupting() {
-     throw "isInterrupting method not implemented";
+     return this._interrupting;
    }
 
    /**
@@ -66,7 +92,7 @@ class Tile {
     * @return {boolean}
     */
     isDeadly() {
-      throw "isDeadly method not implemented";
+      return this._deadly;
     }
 
     /**
@@ -105,40 +131,8 @@ class Wall extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 0, "w");
+    super(x, y, 0, "w", "wall");
   }
-
-  /**
-   * Gets the image name of the tile
-   * @return {string}
-   */
-  get image() {
-    return "wall";
-  }
-
-  /**
-   * Checks if the tile is traversible
-   * @return {boolean}
-   */
-   isTraversible() {
-     return false;
-   }
-
-   /**
-    * Checks if the skaters is stopped after traversing
-    * @return {boolean}
-    */
-   isInterrupting() {
-     return false;
-   }
-
-   /**
-    * Checks if the block is deadly
-    * @return {boolean}
-    */
-    isDeadly() {
-      return false;
-    }
 
 }
 
@@ -150,40 +144,9 @@ class Space extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 1, " ");
+    super(x, y, 1, " ", "space");
+    this._traversible = true;
   }
-
-  /**
-   * Gets the image name of the tile
-   * @return {string}
-   */
-  get image() {
-    return "space";
-  }
-
-  /**
-   * Checks if the tile is traversible
-   * @return {boolean}
-   */
-   isTraversible() {
-     return true;
-   }
-
-   /**
-    * Checks if the skaters is stopped after traversing
-    * @return {boolean}
-    */
-   isInterrupting() {
-     return false;
-   }
-
-   /**
-    * Checks if the block is deadly
-    * @return {boolean}
-    */
-    isDeadly() {
-      return false;
-    }
 
 }
 
@@ -195,40 +158,11 @@ class Spike extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 2, "s");
+    super(x, y, 2, "s", "spike");
+    this._interrupting = true;
+    this._traversible = true;
+    this._deadly = true;
   }
-
-  /**
-   * Gets the image name of the tile
-   * @return {string}
-   */
-  get image() {
-    return "spike";
-  }
-
-  /**
-   * Checks if the tile is traversible
-   * @return {boolean}
-   */
-   isTraversible() {
-     return true;
-   }
-
-   /**
-    * Checks if the skaters is stopped after traversing
-    * @return {boolean}
-    */
-   isInterrupting() {
-     return true;
-   }
-
-   /**
-    * Checks if the block is deadly
-    * @return {boolean}
-    */
-    isDeadly() {
-      return true;
-    }
 
 }
 
@@ -240,7 +174,9 @@ class Barrier extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 3, "b");
+    super(x, y, 3, "b", "barrier");
+    this._interrupting = true;
+    this._traversible = true;
   }
 
   /**
@@ -250,29 +186,5 @@ class Barrier extends Tile {
   get image() {
     return "barrier";
   }
-
-  /**
-   * Checks if the tile is traversible
-   * @return {boolean}
-   */
-   isTraversible() {
-     return true;
-   }
-
-   /**
-    * Checks if the skaters is stopped after traversing
-    * @return {boolean}
-    */
-   isInterrupting() {
-     return false;
-   }
-
-   /**
-    * Checks if the block is deadly
-    * @return {boolean}
-    */
-    isDeadly() {
-      return true;
-    }
 
 }

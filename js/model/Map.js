@@ -1,3 +1,16 @@
+var TEST_LEVEL = "wwwwwwwwwwwwwww\n" +
+                 "w     w   w   w\n" +
+                 "w www www www w\n" +
+                 "w             w\n" +
+                 "w           www\n" +
+                 "w             w\n" +
+                 "wwww      www w\n" +
+                 "wwwwwwwwwwwww w\n" +
+                 "w             w\n" +
+                 "w             w\n" +
+                 "wwwwwwwwwwwwwww";
+
+
 class Map {
 
   /**
@@ -81,21 +94,22 @@ class Map {
 
   /**
    * Loads a map object from the file (fileName)
-   * @param {string} fileName
+   * @param {string} string
    * @return {Map}
    */
-  static loadFromFile(fileName) {
-    var file = new File([""], fileName);
-    var textByLine = file.getAsText().split("\n");
+  static loadFromString(string) {
+    var textByLine = string.split("\n");
     var height = textByLine.length;
     var width = textByLine[0].length;
 
     var myMap = new Map(width, height);
     for (var x = 0; x < width; x++) {
       for (var y = 0; y < height; y++) {
-        setTile(Tile.createTile(x,y,textByLine[y][x]));
+        myMap.setTile(Tile.createTile(x,y,textByLine[height - y - 1][x]));
       }
     }
+
+    return myMap;
   }
 
 }

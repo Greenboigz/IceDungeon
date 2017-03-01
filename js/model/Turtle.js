@@ -26,18 +26,9 @@ class Turtle {
    * @param {Direction} direction
    */
   turn(direction) {
-    if (!this._moving) {
+    if (!this._moving && !this._hiding) {
       this._direction = direction;
       this._moving = true;
-    }
-  }
-
-  /**
-   * Removes the pending direction
-   */
-  unturn(direction) {
-    if (Direction.compare(direction, this._pendingDirection)) {
-      this._pendingDirection = Direction.NONE();
     }
   }
 
@@ -45,7 +36,7 @@ class Turtle {
    * Moves the skater forward if it can
    */
   move() {
-    if (this._alive && this._moving && !this._hiding) {
+    if (this._alive && this._moving) {
      var newLoc = Vector.add(this._gridLoc, this._direction.toVector());
      if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
        this._loc = Vector.add(this._loc, Vector.scale(this._direction.toVector(), 1/DIV_SIZE));
@@ -69,7 +60,7 @@ class Turtle {
    * projectiles or hits
    */
   hide() {
-    if (!this._moving && !this._hiding) {
+    if (!this._hiding) {
       this._hiding = true;
     }
   }
@@ -180,6 +171,20 @@ class Turtle {
     */
    die() {
      this._alive = false;
+   }
+
+   /**
+    * Gets the name of the image associated with the turtle
+    * @return {string}
+    */
+   get image() {
+     if (this._alive) {
+       if (this._hiding) {
+         return "turtle_hidden";
+       } else {
+         return "turtle";
+       }
+     }
    }
 
 }

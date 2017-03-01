@@ -35,6 +35,7 @@ class View {
     this.imageHandler.loadImage("wall", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("space", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**
@@ -49,7 +50,7 @@ class View {
    * Draws the Turtle
    */
   drawTurtle() {
-    this.imageHandler.drawImage("turtle", this.turtle.location.x * PIXELS_PER_DIV,
+    this.imageHandler.drawImage(this.turtle.image, this.turtle.location.x * PIXELS_PER_DIV,
       (this.map.height - this.turtle.location.y) * PIXELS_PER_DIV,
       this.turtle.direction.radians);
   }
