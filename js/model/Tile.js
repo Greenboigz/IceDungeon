@@ -182,7 +182,7 @@ class Wall extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 0, "w", "wall");
+    super(x, y, 0, "w", "snow");
   }
 
 }
@@ -195,7 +195,7 @@ class Space extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 1, " ", "space");
+    super(x, y, 1, " ", "ice");
     this._traversible = true;
     this._storable = true;
   }

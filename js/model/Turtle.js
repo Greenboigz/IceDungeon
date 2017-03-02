@@ -1,4 +1,4 @@
-DIV_SIZE = 8;
+DIV_SIZE = 4;
 
 /**
  * This is the main character of the game
@@ -156,6 +156,10 @@ class Turtle {
     return this._loc;
   }
 
+  get gridLocation() {
+    return this._gridLoc;
+  }
+
   /**
    * Checks if the turtle is between tiles
    * @return {boolean}
@@ -197,7 +201,11 @@ class Turtle {
        if (this._hiding) {
          return "turtle_hidden";
        } else {
-         return "turtle";
+         if (this._moving) {
+           return "turtle";
+         } else {
+           return "turtle_stationary";
+         }
        }
      }
    }

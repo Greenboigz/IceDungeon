@@ -1,15 +1,50 @@
-var TEST_LEVEL = "wwwwwwwwwwwwwww\n" +
-                 "w     wTttwTttw\n" +
-                 "w www wwwtwwwtw\n" +
-                 "w  B        ttw\n" +
-                 "w           www\n" +
-                 "w   bbbbbb    w\n" +
-                 "wwwwttttttwww w\n" +
-                 "wwwwwwwwwwwww w\n" +
-                 "w             w\n" +
-                 "w             w\n" +
-                 "wwwwwwwwwwwwwww";
+var TEST_LEVEL = [
+  "wwwwwwwwwwwwwww",
+  "w     wTttwTttw",
+  "w www wwwtwwwtw",
+  "w  B        ttw",
+  "w           www",
+  "w   bbbbbb    w",
+  "wwwwttttttwww w",
+  "wwwwwwwwwwwww w",
+  "w             w",
+  "w             w",
+  "wwwwwwwwwwwwwww"
+];
 
+var LEVEL_1 = [
+  "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+  "w ttTtt w     w   w       ttttw",
+  "w wwwww w w w w           wwwtw",
+  "w     w   w w              wwtw",
+  "wwwww wwwww www              tw",
+  "wTtttttttT    w  w           tw",
+  "wtwwwwwwwtw w w           wwwtw",
+  "wTtttttttTw w w     w     wwwtw",
+  "wwwwwwwwwww w wwwwwww wwwwwwwtw",
+  "w    wttttw   w       w     w w",
+  "w w    wwtw   w       w www w w",
+  "w w  w  wtw   w        tTtw w w",
+  "w w     wTw   w       wTtTw w w",
+  "w wTw   www   w       wwwww w w",
+  "w wwwwwww                   w w",
+  "w   w   w w   w    wwwwwwwwww w",
+  "w w w w w w   ww              w",
+  "w w   w   w                   w",
+  "wwwwwwwwwww w   wwwwwwwwwwwwwww",
+  "wTtttttTww  wwwwwtttttttttttttw",
+  "wtwwwwwtw               w   w w",
+  "wtwTtttTw               w     w",
+  "wtwwwwwww    wwwwww           w",
+  "wTttttttt       www           w",
+  "wwwwwwwww                     w",
+  "w                             w",
+  "w wwwwwww w w w w w      w    w",
+  "w       w w w     w          ww",
+  "wwwwwww www w www wt   w     tw",
+  "wTttttt     w     wtttttttttttw",
+  "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+];
 
 class Map {
 
@@ -47,9 +82,14 @@ class Map {
    * @return {Tile}
    */
   getTile(x, y) {
-    if (Math.floor(x) == x && Math.floor(y) == y)
-      return this._grid[y][x];
-    throw "(" + x + "," + y + ") is not valid";
+    if (Math.floor(x) == x && Math.floor(y) == y) {
+      if (x >= 0 && x < this._width && y >= 0 && y < this._height) {
+        return this._grid[y][x];
+      } else {
+        return new Space(x,y);
+      }
+    }
+    throw "x and y coordinates must be integers";
   }
 
   /**
@@ -94,18 +134,17 @@ class Map {
 
   /**
    * Loads a map object from the file (fileName)
-   * @param {string} string
+   * @param {Array} lines
    * @return {Map}
    */
-  static loadFromString(string) {
-    var textByLine = string.split("\n");
-    var height = textByLine.length;
-    var width = textByLine[0].length;
+  static loadFromString(lines) {
+    var height = lines.length;
+    var width = lines[0].length;
 
     var myMap = new Map(width, height);
     for (var x = 0; x < width; x++) {
       for (var y = 0; y < height; y++) {
-        myMap.setTile(Tile.createTile(x,y,textByLine[height - y - 1][x]));
+        myMap.setTile(Tile.createTile(x,y,lines[height - y - 1][x]));
       }
     }
 

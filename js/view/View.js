@@ -1,4 +1,5 @@
 var PIXELS_PER_DIV = 32;
+var DISPLAY_DIM = 15;
 
 class View {
 
@@ -8,8 +9,8 @@ class View {
    */
   constructor(map) {
     var canvas = document.createElement("canvas");
-    canvas.width = map.width*PIXELS_PER_DIV;
-    canvas.height = map.height*PIXELS_PER_DIV;
+    canvas.width = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
+    canvas.height = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
 
     this.ctx = canvas.getContext("2d");
     this.map = map;
@@ -35,10 +36,13 @@ class View {
     this.imageHandler.loadImage("space", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("turtle_stationary", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("ice", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("snow", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**
@@ -72,6 +76,46 @@ class View {
         }
       }
     }
+  }
+
+  /**
+   * Only draws the board surrounding the turtle
+   */
+  drawLocal() {
+    this.drawLocalMap();
+    this.drawLocalTurtle();
+    this.drawBorder();
+  }
+
+  /**
+   * Draws local map of where the turtle is
+   */
+  drawLocalMap() {
+    var i, j;
+    var center = new Vector(Math.floor(DISPLAY_DIM/2)+1, Math.floor(DISPLAY_DIM/2));
+    for (i = -1; i < DISPLAY_DIM+2; i++) {
+      for (j = -1; j < DISPLAY_DIM+2; j++) {
+        var tile = this.map.getTile(i - center.x + turtle.gridLocation.x, j - center.y + turtle.gridLocation.y);
+        var location = Vector.add(tile.location, Vector.subtract(center, turtle.location));
+        this.imageHandler.drawImage(tile.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
+        if (tile.hasItem()) {
+          this.imageHandler.drawImage(tile.item.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
+        }
+      }
+    }
+  }
+
+  drawLocalTurtle() {
+    this.imageHandler.drawImage(this.turtle.image, Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV,
+      Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV, this.turtle.direction.radians);
+  }
+
+  drawBorder() {
+    this.ctx.beginPath();
+    this.ctx.lineWidth=PIXELS_PER_DIV;
+    this.ctx.strokeStyle="black";
+    this.ctx.rect(PIXELS_PER_DIV/2,PIXELS_PER_DIV/2,(DISPLAY_DIM+1) * PIXELS_PER_DIV, (DISPLAY_DIM+1) * PIXELS_PER_DIV);
+    this.ctx.stroke();
   }
 
 }

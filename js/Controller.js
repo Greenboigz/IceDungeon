@@ -1,4 +1,4 @@
-var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 5;
+var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 10;
 var includes = ["js/math/Vector.js", "js/math/Direction.js", "js/model/Map.js",
                 "js/model/Tile.js", "js/model/Turtle.js", "js/model/Item.js",
                 "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js"];
@@ -42,7 +42,7 @@ function print(param) {
 }
 
 function init() {
-  map = Map.loadFromString(TEST_LEVEL);
+  map = Map.loadFromString(LEVEL_1);
   turtle = map.turtle;
   view = new View(this.map);
 
@@ -85,7 +85,7 @@ function callUnhide() {
 
 function repeat() {
   //document.getElementById("divGameStage").innerHTML = map.toString();
-  view.draw();
+  view.drawLocal();
   modelRepeat();
   setTimeout(repeat, RELOAD);
 }

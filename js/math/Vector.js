@@ -16,6 +16,15 @@ class Vector {
     return new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
   }
 
+  /**
+   * Subtracts vec2 from vec 1
+   * @param {Vector} vec1
+   * @param {Vector} vec2
+   */
+  static subtract(vec1, vec2) {
+    return new Vector(vec1.x - vec2.x, vec1.y - vec2.y);
+  }
+
   static scale(vec1, amount) {
     return new Vector(amount * vec1.x, amount * vec1.y);
   }
