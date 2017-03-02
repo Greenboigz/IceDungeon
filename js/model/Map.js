@@ -1,10 +1,10 @@
 var TEST_LEVEL = "wwwwwwwwwwwwwww\n" +
-                 "w     wTttw   w\n" +
-                 "w www wwwtwww w\n" +
-                 "w             w\n" +
+                 "w     wTttwTttw\n" +
+                 "w www wwwtwwwtw\n" +
+                 "w  B        ttw\n" +
                  "w           www\n" +
-                 "w             w\n" +
-                 "wwww      www w\n" +
+                 "w   bbbbbb    w\n" +
+                 "wwwwttttttwww w\n" +
                  "wwwwwwwwwwwww w\n" +
                  "w             w\n" +
                  "w             w\n" +

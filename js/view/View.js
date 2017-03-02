@@ -37,6 +37,8 @@ class View {
     this.imageHandler.loadImage("turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("big_black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**
@@ -52,7 +54,7 @@ class View {
    */
   drawTurtle() {
     this.imageHandler.drawImage(this.turtle.image, this.turtle.location.x * PIXELS_PER_DIV,
-      (this.map.height - this.turtle.location.y) * PIXELS_PER_DIV,
+      (this.map.height - this.turtle.location.y - 1) * PIXELS_PER_DIV,
       this.turtle.direction.radians);
   }
 

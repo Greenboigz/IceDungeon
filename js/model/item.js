@@ -60,6 +60,28 @@ class BigToken extends Item {
 
 }
 
+class BlackToken extends Item {
+
+  /**
+   * Builds the black token object
+   */
+  constructor() {
+    super(1, 0, "black_token");
+  }
+
+}
+
+class BigBlackToken extends Item {
+
+  /**
+   * Builds the big black token object
+   */
+  constructor() {
+    super(10, 0, "big_black_token");
+  }
+
+}
+
 class Money extends Item {
 
   /**

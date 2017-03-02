@@ -144,10 +144,16 @@ class Tile {
           tile = new Wall(x, y);
           break;
         case ' ':
+        case 'b':
+        case 'B':
         case 't':
         case 'T':
           tile = new Space(x, y);
-          if (character == 't') {
+          if (character == 'b') {
+            tile.item = new BlackToken();
+          } else if (character == 'B') {
+            tile.item = new BigBlackToken();
+          } else if (character == 't') {
             tile.item = new Token();
           } else if (character == 'T') {
             tile.item = new BigToken();

@@ -92,22 +92,29 @@ class Image {
     if (this.spriteLength > 1) {
       var time = (new Date()).getTime() % (1000 * this.period);
       var loc = Math.floor(this.spriteLength * time / (this.period*1000));
-      this.context.save();
-      this.context.translate(x + 0.5 * this.width, y - 0.5 * this.height);
-      this.context.rotate(-angle);
-      this.context.drawImage(this._element, 0, this.sheight * loc, this.swidth,
-        this.sheight, - 0.5 * this.width, - 0.5 * this.height,
-        this.width, this.height);
-      this.context.restore();
-    } else if (angle != 0) {
-      this.context.save();
-      this.context.translate(x + 0.5 * this.width, y - 0.5 * this.height);
-      this.context.rotate(-angle);
-      this.context.drawImage(this._element, - 0.5 * this.width,
-        - 0.5 * this.height, this.width, this.height);
-      this.context.restore();
+      if (angle != 0) {
+        this.context.save();
+        this.context.translate(x + 0.5 * this.width, y + 0.5 * this.height);
+        this.context.rotate(-angle);
+        this.context.drawImage(this._element, 0, this.sheight * loc, this.swidth,
+          this.sheight, - 0.5 * this.width, - 0.5 * this.height,
+          this.width, this.height);
+        this.context.restore();
+      } else {
+        this.context.drawImage(this._element, 0, this.sheight * loc, this.swidth,
+          this.sheight, x, y, this.width, this.height);
+      }
     } else {
-      this.context.drawImage(this._element, x, y, this.width, this.height);
+      if (angle != 0) {
+        this.context.save();
+        this.context.translate(x + 0.5 * this.width, y - 0.5 * this.height);
+        this.context.rotate(-angle);
+        this.context.drawImage(this._element, - 0.5 * this.width,
+          - 0.5 * this.height, this.width, this.height);
+        this.context.restore();
+      } else {
+        this.context.drawImage(this._element, x, y, this.width, this.height);
+      }
     }
   }
 

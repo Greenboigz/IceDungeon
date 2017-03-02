@@ -38,13 +38,13 @@ class Turtle {
    * Moves the skater forward if it can
    */
   move() {
+    this.consume();
     if (this._alive && this._moving) {
      var newLoc = Vector.add(this._gridLoc, this._direction.toVector());
      if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
        this._loc = Vector.add(this._loc, Vector.scale(this._direction.toVector(), 1/DIV_SIZE));
        if (!this.isBetween()) {
          this._gridLoc = this._loc;
-         this.consume();
          if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
            this._moving = false;
            this.die();
@@ -63,7 +63,7 @@ class Turtle {
    */
   consume() {
     var tile = this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
-    if (tile.hasItem()) {
+    if (tile.hasItem() && !this.isHiding()) {
       var item = tile.removeItem();
       this._points += item.points;
       this._coins += item.coins;
