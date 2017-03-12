@@ -18,7 +18,9 @@ class Tile {
     this._hasItem = false;
     this._storable = false;
     this._traversible = false;
+    this._slippery = false;
     this._interrupting = false;
+    this._walkable = false;
     this._deadly = false;
   }
 
@@ -107,6 +109,14 @@ class Tile {
   }
 
   /**
+   * Checks if the tile is slippery
+   * @return {boolean}
+   */
+   isSlippery() {
+     return this._slippery;
+   }
+
+  /**
    * Checks if the tile is traversible
    * @return {boolean}
    */
@@ -123,11 +133,29 @@ class Tile {
    }
 
    /**
+    * Checks if the tile is walkable
+    * @return {boolean}
+    */
+   isWalkable() {
+     return this._walkable;
+   }
+
+   /**
     * Checks if the block is deadly
     * @return {boolean}
     */
     isDeadly() {
       return this._deadly;
+    }
+
+    /**
+     * Compares the type values of tiles
+     * @param {Tile} tile1
+     * @param {Tile} tile2
+     * @return {boolean}
+     */
+    static compare(tile1, tile2) {
+      return tile1._type == tile2._type;
     }
 
     /**
@@ -141,14 +169,14 @@ class Tile {
       var tile;
       switch (character) {
         case 'w':
-          tile = new Wall(x, y);
+          tile = new SnowWall(x, y);
           break;
         case ' ':
         case 'b':
         case 'B':
         case 't':
         case 'T':
-          tile = new Space(x, y);
+          tile = new Ice(x, y);
           if (character == 'b') {
             tile.item = new BlackToken();
           } else if (character == 'B') {
@@ -159,6 +187,9 @@ class Tile {
             tile.item = new BigToken();
           }
           break;
+        case 'W':
+          tile = new Water(x,y);
+          break;
         case 's':
           tile = new Spike(x, y);
           break;
@@ -166,7 +197,7 @@ class Tile {
           tile = new Barrier(x, y);
           break;
         default:
-          tile = new Space(x, y);
+          tile = new Ice(x, y);
       }
 
       return tile;
@@ -174,7 +205,7 @@ class Tile {
 
 }
 
-class Wall extends Tile {
+class SnowWall extends Tile {
 
   /**
    * Wall class representing the tile object that holds location value
@@ -187,7 +218,7 @@ class Wall extends Tile {
 
 }
 
-class Space extends Tile {
+class Ice extends Tile {
 
   /**
    * Space class representing the tile object that holds location value
@@ -198,6 +229,22 @@ class Space extends Tile {
     super(x, y, 1, " ", "ice");
     this._traversible = true;
     this._storable = true;
+    this._slippery = true;
+  }
+
+}
+
+class Water extends Tile {
+
+  /**
+   * Space class representing the tile object that holds location value
+   * @param {number} x
+   * @param {number} y
+   */
+  constructor(x, y) {
+    super(x, y, 2, " ", "water");
+    this._traversible = true;
+    this._storable = false;
   }
 
 }
@@ -210,7 +257,7 @@ class Spike extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 2, "s", "spike");
+    super(x, y, 3, "s", "spike");
     this._interrupting = true;
     this._traversible = true;
     this._storable = true;
@@ -227,9 +274,10 @@ class Barrier extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 3, "b", "barrier");
+    super(x, y, 4, "b", "barrier");
     this._interrupting = true;
     this._traversible = true;
+    this._walkable = true;
   }
 
   /**

@@ -37,12 +37,16 @@ class View {
     this.imageHandler.loadImage("turtle", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("turtle_stationary", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("swimming_turtle", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("swimming_turtle_hidden", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("swimming_turtle_stationary", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("ice", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("snow", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("water", 8, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**

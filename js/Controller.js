@@ -1,7 +1,8 @@
 var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 10;
 var includes = ["js/math/Vector.js", "js/math/Direction.js", "js/model/Map.js",
                 "js/model/Tile.js", "js/model/Turtle.js", "js/model/Item.js",
-                "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js"];
+                "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js",
+                "js/model/MoveHandler.js"];
 
 function loadScript(url, callback)
 {
@@ -42,7 +43,7 @@ function print(param) {
 }
 
 function init() {
-  map = Map.loadFromString(LEVEL_1);
+  map = Map.loadFromString(LEVEL_2);
   turtle = map.turtle;
   view = new View(this.map);
 
@@ -53,10 +54,12 @@ function init() {
   keypadListener.getKeyListener("right").addKeyDownEvent(callDownEast);
   keypadListener.getKeyListener("down").addKeyDownEvent(callDownSouth);
   keypadListener.getKeyListener("left").addKeyDownEvent(callDownWest);
+  keypadListener.getKeyListener("up").addKeyUpEvent(callUpNorth);
+  keypadListener.getKeyListener("right").addKeyUpEvent(callUpEast);
+  keypadListener.getKeyListener("down").addKeyUpEvent(callUpSouth);
+  keypadListener.getKeyListener("left").addKeyUpEvent(callUpWest);
   keypadListener.getKeyListener("space").addKeyDownEvent(callHide);
   keypadListener.getKeyListener("space").addKeyUpEvent(callUnhide);
-
-  console.log(map.turtle.getLocation());
 }
 
 function callDownNorth() {
@@ -73,6 +76,22 @@ function callDownSouth() {
 
 function callDownWest() {
   turtle.turn(Direction.WEST());
+}
+
+function callUpNorth() {
+  turtle.unturn(Direction.NORTH());
+}
+
+function callUpEast() {
+  turtle.unturn(Direction.EAST());
+}
+
+function callUpSouth() {
+  turtle.unturn(Direction.SOUTH());
+}
+
+function callUpWest() {
+  turtle.unturn(Direction.WEST());
 }
 
 function callHide() {

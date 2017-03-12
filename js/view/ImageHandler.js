@@ -107,7 +107,7 @@ class Image {
     } else {
       if (angle != 0) {
         this.context.save();
-        this.context.translate(x + 0.5 * this.width, y - 0.5 * this.height);
+        this.context.translate(x + 0.5 * this.width, y + 0.5 * this.height);
         this.context.rotate(-angle);
         this.context.drawImage(this._element, - 0.5 * this.width,
           - 0.5 * this.height, this.width, this.height);

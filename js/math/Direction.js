@@ -109,6 +109,24 @@ class Direction {
   }
 
   /**
+   * Gets the string of the direction
+   * @return {string}
+   */
+  toString() {
+    if (this.val == NORTH) {
+      return "North";
+    } else if (this.val == EAST) {
+      return "East";
+    } else if (this.val == SOUTH) {
+      return "South";
+    } else if (this.val == WEST) {
+      return "West";
+    } else {
+      return "None";
+    }
+  }
+
+  /**
    * Compares the direction objects
    * @param {Direction} dir1
    * @param {Direction} dir2

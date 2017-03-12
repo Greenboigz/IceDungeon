@@ -16,6 +16,7 @@ class Turtle {
     this._gridLoc = new Vector(x,y);
     this._grid = grid;
     this._direction = Direction.NORTH();
+    this._stop = true;
     this._moving = false;
     this._alive = true;
     this._hiding = false;
@@ -28,9 +29,25 @@ class Turtle {
    * @param {Direction} direction
    */
   turn(direction) {
-    if (!this._moving && !this._hiding) {
+    if (!this._moving && !this._hiding && !Direction.compare(direction, Direction.NONE())) {
       this._direction = direction;
       this._moving = true;
+      this._stop = false;
+      //console.log("Move in " + direction.toString())
+    } else if (Direction.compare(this._dir_wait, Direction.NONE())) {
+      this._dir_wait = direction;
+    }
+  }
+
+  /**
+   * Handles the button release for the turtle
+   * @param {Direction} direction
+   */
+  unturn(direction) {
+    if (Direction.compare(turtle.direction, direction)) {
+      this._stop = true;
+    } else if (Direction.compare(turtle._dir_wait, direction)) {
+      this._dir_wait = Direction.NONE();
     }
   }
 
@@ -42,14 +59,24 @@ class Turtle {
     if (this._alive && this._moving) {
      var newLoc = Vector.add(this._gridLoc, this._direction.toVector());
      if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
-       this._loc = Vector.add(this._loc, Vector.scale(this._direction.toVector(), 1/DIV_SIZE));
+       this._loc = Vector.add(this._loc, this.step);
        if (!this.isBetween()) {
          this._gridLoc = this._loc;
-         if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
+         if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
            this._moving = false;
            this.die();
          } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
            this._moving = false;
+         } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
+           if (this._stop) {
+             if (Direction.compare(this._dir_wait, Direction.NONE()) || this._hiding) {
+               this._moving = false;
+             } else {
+               this._direction = this._dir_wait;
+               this._dir_wait = Direction.NONE();
+               this._stop = false;
+             }
+           }
          }
        }
      } else {
@@ -77,6 +104,7 @@ class Turtle {
   hide() {
     if (!this._hiding) {
       this._hiding = true;
+      this._stop = true;
     }
   }
 
@@ -96,13 +124,45 @@ class Turtle {
     return this._hiding;
   }
 
-   /**
-    * Gets the vector for the center of the person
-    * @return {Vector}
-    */
-   get center() {
-     return Vector.add(this._loc, new Vector(0.5, 0.5));
-   }
+  /**
+   * Gets the current tile of the turtle
+   * @return {Tile}
+   */
+  get tile() {
+    return this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
+  }
+
+  /**
+   * Gets the step the Turtle takes
+   * @return {Vector}
+   */
+  get step() {
+    if (this.tile.isSlippery()) {
+      return Vector.scale(this._direction.toVector(), 1/DIV_SIZE);
+    } else {
+      return Vector.scale(this._direction.toVector(), 1/DIV_SIZE/2)
+    }
+  }
+
+  /**
+   * Gets the vector for the center of the person
+   * @return {Vector}
+   */
+  get center() {
+    return Vector.add(this._loc, new Vector(0.5, 0.5));
+  }
+
+  /**
+   * Checks if the turtle is on lond
+   * @return {boolean}
+   */
+  isOnLand() {
+    var water = new Water(0,0);
+    var tile_front = this._grid.getTile(this.front.x, this.front.y);
+    var tile_back = this._grid.getTile(this.back.x, this.back.y);
+    return !Tile.compare(tile_front, water) || !Tile.compare(tile_back, water);
+  }
+
 
   /**
    * Gets the back of the turtle
@@ -146,6 +206,14 @@ class Turtle {
    */
   get direction() {
     return this._direction;
+  }
+
+  /**
+   * Gets the pending direction of the turtle
+   * @return {Direction}
+   */
+  get pending_direction() {
+    return this._dir_wait;
   }
 
   /**
@@ -196,7 +264,7 @@ class Turtle {
     * Gets the name of the image associated with the turtle
     * @return {string}
     */
-   get image() {
+   get image2() {
      if (this._alive) {
        if (this._hiding) {
          return "turtle_hidden";
@@ -205,6 +273,36 @@ class Turtle {
            return "turtle";
          } else {
            return "turtle_stationary";
+         }
+       }
+     }
+   }
+
+   /**
+    * Gets the name of the image associated with the turtle
+    * @return {string}
+    */
+   get image() {
+     if (this._alive) {
+       if (this._hiding) {
+         if (!this.isOnLand()) {
+           return "swimming_turtle_hidden";
+         } else {
+           return "turtle_hidden";
+         }
+       } else {
+         if (this._moving) {
+           if (!this.isOnLand()) {
+             return "swimming_turtle";
+           } else {
+             return "turtle";
+           }
+         } else {
+           if (!this.isOnLand()) {
+             return "swimming_turtle_stationary";
+           } else {
+             return "turtle_stationary";
+           }
          }
        }
      }
