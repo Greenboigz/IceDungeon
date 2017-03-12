@@ -22,6 +22,7 @@ class Turtle {
     this._hiding = false;
     this._points = 0;
     this._coins = 0;
+    this._dir_wait = Direction.NONE();
   }
 
   /**
