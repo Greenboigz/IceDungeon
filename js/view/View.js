@@ -15,6 +15,7 @@ class View {
     this.ctx = canvas.getContext("2d");
     this.map = map;
     this.turtle = map.turtle;
+    this.enemies = map.enemies;
     this.IMAGES = {};
     this.divImg = document.getElementById("divGameImg");
 
@@ -44,6 +45,8 @@ class View {
     this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("shark", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("attacking_shark", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("ice", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("snow", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("water", 8, PIXELS_PER_DIV, PIXELS_PER_DIV);
@@ -53,8 +56,22 @@ class View {
    * Draws the canvas
    */
   draw() {
-    view.drawMap();
+    this.drawMap();
     this.drawTurtle();
+    this.drawEnemies();
+  }
+
+  /**
+   * Draws the enemies
+   */
+  drawEnemies() {
+    for (var enemy in this.enemies) {
+      var location = Vector.add(tile.location, Vector.subtract(center, turtle.location));
+      this.imageHandler.drawImage(tile.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
+      if (tile.hasItem()) {
+        this.imageHandler.drawImage(tile.item.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
+      }
+    }
   }
 
   /**
@@ -87,6 +104,7 @@ class View {
    */
   drawLocal() {
     this.drawLocalMap();
+    this.drawLocalEnemies();
     this.drawLocalTurtle();
     this.drawBorder();
   }
@@ -110,8 +128,24 @@ class View {
   }
 
   drawLocalTurtle() {
-    this.imageHandler.drawImage(this.turtle.image, Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV,
-      Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV, this.turtle.direction.radians);
+    if (this.turtle.isAlive()) {
+      this.imageHandler.drawImage(this.turtle.image, Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV,
+        Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV, this.turtle.direction.radians);
+    }
+  }
+
+  /**
+   * Draws the enemies
+   */
+  drawLocalEnemies() {
+    var center = new Vector(Math.floor(DISPLAY_DIM/2)+1, Math.floor(DISPLAY_DIM/2));
+    for (var e = 0; e < this.enemies.length; e++) {
+      var enemy = this.enemies[e];
+      var location = Vector.add(enemy.location, Vector.subtract(center, turtle.location));
+      this.imageHandler.drawSpriteImage(enemy.image, location.x * PIXELS_PER_DIV,
+        (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, enemy.direction.radians,
+        enemy.time);
+    }
   }
 
   drawBorder() {

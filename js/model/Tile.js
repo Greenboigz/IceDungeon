@@ -177,15 +177,6 @@ class Tile {
         case 't':
         case 'T':
           tile = new Ice(x, y);
-          if (character == 'b') {
-            tile.item = new BlackToken();
-          } else if (character == 'B') {
-            tile.item = new BigBlackToken();
-          } else if (character == 't') {
-            tile.item = new Token();
-          } else if (character == 'T') {
-            tile.item = new BigToken();
-          }
           break;
         case 'W':
           tile = new Water(x,y);

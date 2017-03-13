@@ -7,6 +7,10 @@ class Vector {
     this.y = y;
   }
 
+  toString() {
+    return "{" + this.x + "," + this.y + "}";
+  }
+
   /**
    * Adds the other to itself and returns
    * @param {Vector} vec1

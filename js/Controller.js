@@ -1,8 +1,8 @@
-var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 10;
+var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 5;
 var includes = ["js/math/Vector.js", "js/math/Direction.js", "js/model/Map.js",
                 "js/model/Tile.js", "js/model/Turtle.js", "js/model/Item.js",
                 "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js",
-                "js/model/MoveHandler.js"];
+                "js/model/MoveHandler.js", "js/model/Enemy.js", "js/model/Shark.js"];
 
 function loadScript(url, callback)
 {
@@ -43,8 +43,9 @@ function print(param) {
 }
 
 function init() {
-  map = Map.loadFromString(LEVEL_2);
+  map = Map.loadFromString(MAP_2, TOKEN_2, ENEMIES_2);
   turtle = map.turtle;
+  enemies = map.enemies;
   view = new View(this.map);
 
   keypadListener = new KeypadListener();
@@ -111,6 +112,9 @@ function repeat() {
 
 function modelRepeat() {
   turtle.move();
+  for (var e = 0; e < enemies.length; e++) {
+    enemies[e].move();
+  }
 }
 
 load_files();

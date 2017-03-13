@@ -32,7 +32,7 @@ var LEVEL_1 = [
   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
 ];
 
-var LEVEL_2 = [
+var MAP_2 = [
   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
   "w                     wwww    w",
   "w wwwwwwwwwwwwwwwwwww    w ww w",
@@ -60,11 +60,47 @@ var LEVEL_2 = [
   "w wwwwwWWWWWWWWWWWWWWWWWw    ww",
   "w   wwWWWWWWWWWWWWWWWWWWWw   ww",
   "www                          ww",
-  "w wwWWWWWW           WWWWw ww w",
+  "w wwwwWWWW           WWWWw ww w",
   "w wWWWWWWW  w www w  WWWWw  w w",
   "wWWWWWWWWW  w     w  WWWWWW   w",
   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
 ];
+
+var TOKEN_2 = [
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  "                               ",
+  " T                           T ",
+  " t                           t ",
+  "                               ",
+  "                               ",
+];
+
+var ENEMIES_2 = [["shark", new Vector(10,9), Direction.EAST()]];
 
 class Map {
 
@@ -78,6 +114,7 @@ class Map {
     this._height = height;
     this._grid = [];
     this._turtle = new Turtle(Math.floor(this._width/2), 1, this);
+    this._enemies = [];
     //this._turtle = new Turtle(0, 0, this);
 
     this.buildGrid();
@@ -95,6 +132,10 @@ class Map {
     return this._turtle;
   }
 
+  get enemies() {
+    return this._enemies;
+  }
+
   /**
    * Gets the tile at the given location
    * @param {number} x
@@ -109,7 +150,7 @@ class Map {
         return new Ice(x,y);
       }
     }
-    throw "x and y coordinates must be integers";
+    throw "x and y coordinates must be integers - " + "{" + x + "," + y + "}";
   }
 
   /**
@@ -130,6 +171,14 @@ class Map {
         this._grid[y].push(new SnowWall(x, y));
       }
     }
+  }
+
+  /**
+   * Adds the enemy to the list of enemies
+   * @param {Enemy} enemy
+   */
+  addEnemy(enemy) {
+    this._enemies.push(enemy);
   }
 
   /**
@@ -154,18 +203,30 @@ class Map {
 
   /**
    * Loads a map object from the file (fileName)
-   * @param {Array} lines
+   * @param {Array} mapGrid
+   * @param {Array} itemGrid
+   * @param {Array} enemies
    * @return {Map}
    */
-  static loadFromString(lines) {
-    var height = lines.length;
-    var width = lines[0].length;
+  static loadFromString(mapGrid, itemGrid, enemies) {
+    var height = mapGrid.length;
+    var width = mapGrid[0].length;
 
     var myMap = new Map(width, height);
     for (var x = 0; x < width; x++) {
       for (var y = 0; y < height; y++) {
-        myMap.setTile(Tile.createTile(x,y,lines[height - y - 1][x]));
+        var tile = Tile.createTile(x,y,mapGrid[height - y - 1][x]);
+        if (tile.isStorable()) {
+          tile.item = Item.createItem(itemGrid[height - y - 1][x]);
+        }
+        myMap.setTile(tile);
       }
+    }
+
+    for (var e = 0; e < enemies.length; e++) {
+      var enemy = enemies[e];
+      enemy = Enemy.createEnemy(enemy[0], enemy[1], enemy[2], myMap);
+      //console.log(enemy);
     }
 
     return myMap;

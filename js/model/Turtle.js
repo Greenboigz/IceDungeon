@@ -1,4 +1,4 @@
-DIV_SIZE = 4;
+DIV_SIZE = 8;
 
 /**
  * This is the main character of the game
@@ -16,13 +16,13 @@ class Turtle {
     this._gridLoc = new Vector(x,y);
     this._grid = grid;
     this._direction = Direction.NORTH();
-    this._stop = true;
     this._moving = false;
+    this._stopped = false;
     this._alive = true;
     this._hiding = false;
     this._points = 0;
     this._coins = 0;
-    this._dir_wait = Direction.NONE();
+    this._moves = new MoveHandler();
   }
 
   /**
@@ -30,13 +30,9 @@ class Turtle {
    * @param {Direction} direction
    */
   turn(direction) {
-    if (!this._moving && !this._hiding && !Direction.compare(direction, Direction.NONE())) {
-      this._direction = direction;
+    this._moves.press(direction);
+    if (!this._moving && !this._hiding) {
       this._moving = true;
-      this._stop = false;
-      //console.log("Move in " + direction.toString())
-    } else if (Direction.compare(this._dir_wait, Direction.NONE())) {
-      this._dir_wait = direction;
     }
   }
 
@@ -45,11 +41,15 @@ class Turtle {
    * @param {Direction} direction
    */
   unturn(direction) {
-    if (Direction.compare(turtle.direction, direction)) {
-      this._stop = true;
-    } else if (Direction.compare(turtle._dir_wait, direction)) {
-      this._dir_wait = Direction.NONE();
-    }
+    this._moves.release(direction);
+  }
+
+  /**
+   * Checks if the turtle can turn
+   * @return {boolean}
+   */
+  canTurn() {
+    return !this._hiding && !Direction.compare(this._moves.direction, Direction.NONE()) && !this.isBetween() && !(this._moving && this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery());
   }
 
   /**
@@ -57,32 +57,34 @@ class Turtle {
    */
   move() {
     this.consume();
-    if (this._alive && this._moving) {
-     var newLoc = Vector.add(this._gridLoc, this._direction.toVector());
-     if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
-       this._loc = Vector.add(this._loc, this.step);
-       if (!this.isBetween()) {
-         this._gridLoc = this._loc;
-         if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
-           this._moving = false;
-           this.die();
-         } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
-           this._moving = false;
-         } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
-           if (this._stop) {
-             if (Direction.compare(this._dir_wait, Direction.NONE()) || this._hiding) {
-               this._moving = false;
-             } else {
-               this._direction = this._dir_wait;
-               this._dir_wait = Direction.NONE();
-               this._stop = false;
-             }
-           }
-         }
-       }
-     } else {
-       this._moving = false;
-     }
+    if (this._alive && ! this._stopped) {
+      if (this.canTurn()) {
+        this._direction = this._moves.direction;
+        this._moving = true;
+      }
+      if (this._moving) {
+        var newLoc = Vector.add(this._gridLoc, this.unit_step);
+        if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
+          this._loc = Vector.add(this._loc, this.step);
+          if (!this.isBetween()) {
+            this._gridLoc = this._loc;
+            if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
+              this._moving = false;
+              this.die();
+            } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
+              this._moving = false;
+            } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
+              if (Direction.compare(this._moves.direction, Direction.NONE()) || this._hiding) {
+                this._moving = false;
+              } else {
+                this._direction = this._moves.direction;
+              }
+            }
+          }
+        } else {
+          this._moving = false;
+        }
+      }
     }
   }
 
@@ -105,7 +107,6 @@ class Turtle {
   hide() {
     if (!this._hiding) {
       this._hiding = true;
-      this._stop = true;
     }
   }
 
@@ -126,6 +127,22 @@ class Turtle {
   }
 
   /**
+   * Is the turtle alive
+   * @return {boolean}
+   */
+  isAlive() {
+    return this._alive;
+  }
+
+  /**
+   * Stops the turtle
+   */
+  stop() {
+    this._moving = false;
+    this._stopped = true;
+  }
+
+  /**
    * Gets the current tile of the turtle
    * @return {Tile}
    */
@@ -139,9 +156,21 @@ class Turtle {
    */
   get step() {
     if (this.tile.isSlippery()) {
-      return Vector.scale(this._direction.toVector(), 1/DIV_SIZE);
+      return Vector.scale(this.unit_step, 1/DIV_SIZE);
     } else {
-      return Vector.scale(this._direction.toVector(), 1/DIV_SIZE/2)
+      return Vector.scale(this.unit_step, 1/DIV_SIZE/2)
+    }
+  }
+
+  /**
+   * Gets the step the Turtle takes
+   * @return {Vector}
+   */
+  get unit_step() {
+    if (this.isBetween() || this._moving) {
+      return this._direction.toVector();
+    } else {
+      return this._moves.direction.toVector();
     }
   }
 
@@ -163,7 +192,6 @@ class Turtle {
     var tile_back = this._grid.getTile(this.back.x, this.back.y);
     return !Tile.compare(tile_front, water) || !Tile.compare(tile_back, water);
   }
-
 
   /**
    * Gets the back of the turtle
@@ -225,6 +253,14 @@ class Turtle {
     return this._loc;
   }
 
+  /**
+   * Get location of the skater
+   * @param {Vector} location
+   */
+  set location(location) {
+    return this._loc = location;
+  }
+
   get gridLocation() {
     return this._gridLoc;
   }
@@ -234,7 +270,7 @@ class Turtle {
    * @return {boolean}
    */
   isBetween() {
-    return !Vector.compare(this._loc, this.front);
+    return !Vector.compare(this.back, this.front);
   }
 
    /**
@@ -255,7 +291,7 @@ class Turtle {
    }
 
    /**
-    * Handles when the skater dies
+    * Handles when the turtle dies
     */
    die() {
      this._alive = false;
@@ -306,6 +342,8 @@ class Turtle {
            }
          }
        }
+     } else {
+       return "";
      }
    }
 

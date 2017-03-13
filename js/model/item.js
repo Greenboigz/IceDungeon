@@ -36,6 +36,33 @@ class Item {
     return this._image;
   }
 
+  /**
+   * Creates an item from the associated string
+   * @param {string} string
+   * @return {Item}
+   */
+  static createItem(string) {
+    var item;
+    switch (string) {
+      case 'b':
+        item = new BlackToken();
+        break;
+      case 'B':
+        item = new BigBlackToken();
+        break;
+      case 't':
+        item = new Token();
+        break;
+      case 'T':
+        item = new BigToken();
+        break;
+      default:
+        item = null;
+    }
+    return item;
+  }
+
+
 }
 
 class Token extends Item {
