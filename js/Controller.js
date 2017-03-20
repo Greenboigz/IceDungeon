@@ -1,4 +1,5 @@
-var map, turtle, view, keypadListener, loaded = 0, INIT_RELOAD = 100, RELOAD = 5;
+var map, turtle, view, keypadListener, loaded = 0;
+var INIT_RELOAD = 100, RELOAD = 5, DIV_SIZE = 8, PIXELS_PER_DIV = 32;
 var includes = ["js/math/Vector.js", "js/math/Direction.js", "js/model/Map.js",
                 "js/model/Tile.js", "js/model/Turtle.js", "js/model/Item.js",
                 "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js",

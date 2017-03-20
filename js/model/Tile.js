@@ -235,7 +235,7 @@ class Water extends Tile {
   constructor(x, y) {
     super(x, y, 2, " ", "water");
     this._traversible = true;
-    this._storable = false;
+    this._storable = true;
   }
 
 }

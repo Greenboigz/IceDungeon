@@ -1,4 +1,3 @@
-var PIXELS_PER_DIV = 32;
 var DISPLAY_DIM = 15;
 
 class View {
@@ -45,6 +44,13 @@ class View {
     this.imageHandler.loadImage("big_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("big_black_token", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("star", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("blue_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("gold_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("green_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("navy_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("purple_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("red_key", 2, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("shark", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("attacking_shark", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("ice", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);

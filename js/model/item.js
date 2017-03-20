@@ -56,6 +56,9 @@ class Item {
       case 'T':
         item = new BigToken();
         break;
+      case '*':
+        item = new Star();
+        break;
       default:
         item = null;
     }
@@ -82,7 +85,7 @@ class BigToken extends Item {
    * Builds the big token object
    */
   constructor() {
-    super(10, 0, "big_token");
+    super(0, 1, "big_token");
   }
 
 }
@@ -104,7 +107,18 @@ class BigBlackToken extends Item {
    * Builds the big black token object
    */
   constructor() {
-    super(10, 0, "big_black_token");
+    super(0, 1, "big_black_token");
+  }
+
+}
+
+class Star extends Item {
+
+  /**
+   * Builds the star object
+   */
+  constructor() {
+    super(10, 5, "star");
   }
 
 }

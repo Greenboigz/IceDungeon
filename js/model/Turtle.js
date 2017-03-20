@@ -1,5 +1,3 @@
-DIV_SIZE = 8;
-
 /**
  * This is the main character of the game
  */
