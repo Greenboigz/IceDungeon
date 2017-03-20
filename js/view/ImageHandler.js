@@ -74,7 +74,9 @@ class Image {
 
   /**
    * Builds an image object, which can be comprised of multiple image
-   * elements that repeat by a given period
+   * elements that repeat by a given period. For sprites, this class
+   * requires an image with multiple individual images placed vertically
+   * next to one another.
    * @param {string} name
    * @param {number} period
    * @param {Context} context
