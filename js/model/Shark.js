@@ -15,14 +15,14 @@ class Shark extends Enemy {
   move() {
     var front = Vector.add(this._gridLoc, this._direction.toVector());
     var tile = this._map.getTile(front.x, front.y);
-    if (this._map.turtle.isAlive() && Vector.compare(this._map.turtle.gridLocation, this._gridLoc) && this._biteStart == null) {
+    if (this._map.protagonist.isAlive() && Vector.compare(this._map.protagonist.gridLocation, this._gridLoc, this.speed) && this._biteStart == null) {
       this._moving = false;
-      this._loc = this._map.turtle.location;
+      this._loc = this._map.protagonist.location;
       this._biteStart = (new Date()).getTime();
-      this._map.turtle.stop();
+      this._map.protagonist.stop();
     } else if (this._biteStart != null) {
-      if (this._map.turtle.isAlive() && this.time > BITE_DURATION/2) {
-        this._map.turtle.die();
+      if (this._map.protagonist.isAlive() && this.time > BITE_DURATION/2) {
+        this._map.protagonist.die();
       } else if (this.time > BITE_DURATION) {
         this._biteStart = null;
         this._moving = true;

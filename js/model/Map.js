@@ -69,7 +69,7 @@ var MAP_2 = [
 var TOKEN_2 = [
   "                               ",
   "                          tttt ",
-  "                          T  t ",
+  "                          r  t ",
   "                             t ",
   "                               ",
   "      ttttTtttt                 ",
@@ -116,9 +116,8 @@ class Map {
     this._width = width;
     this._height = height;
     this._grid = [];
-    this._turtle = new Turtle(Math.floor(this._width/2), 1, this);
+    this._protagonist = new Penguin(Math.floor(this._width/2), 1, this);
     this._enemies = [];
-    //this._turtle = new Turtle(0, 0, this);
 
     this.buildGrid();
   }
@@ -131,8 +130,8 @@ class Map {
     return this._height;
   }
 
-  get turtle() {
-    return this._turtle;
+  get protagonist() {
+    return this._protagonist;
   }
 
   get enemies() {
@@ -193,7 +192,7 @@ class Map {
     for (var y = this._height - 1; y >= 0; y--) {
       var line = "";
       for (var x = 0; x < this._width; x++) {
-        if (this.turtle.getLocation().x == x && this.turtle.getLocation().y == y) {
+        if (this.protagonist.getLocation().x == x && this.protagonist.getLocation().y == y) {
           line += "m";
         } else {
           line += this.getTile(x,y).toString();

@@ -1,5 +1,3 @@
-EPSILON = 0.1;
-
 class Vector {
 
   constructor(x, y) {
@@ -33,8 +31,12 @@ class Vector {
     return new Vector(amount * vec1.x, amount * vec1.y);
   }
 
-  static compare(vec1, vec2) {
-    return Math.abs(vec1.x - vec2.x) < EPSILON && Math.abs(vec1.y - vec2.y) < EPSILON;
+  static round(vec) {
+    return new Vector(Math.round(vec.x), Math.round(vec.y));
+  }
+
+  static compare(vec1, vec2, epsilon) {
+    return Math.abs(vec1.x - vec2.x) < epsilon && Math.abs(vec1.y - vec2.y) < epsilon;
   }
 
 }

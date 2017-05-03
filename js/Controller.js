@@ -1,9 +1,11 @@
-var map, turtle, view, keypadListener, loaded = 0;
+var map, protagonist, view, keypadListener, loaded = 0;
 var INIT_RELOAD = 100, RELOAD = 5, DIV_SIZE = 8, PIXELS_PER_DIV = 32;
 var includes = ["js/math/Vector.js", "js/math/Direction.js", "js/model/Map.js",
-                "js/model/Tile.js", "js/model/Turtle.js", "js/model/Item.js",
+                "js/model/Tile.js", "js/model/Protagonist.js", "js/model/Turtle.js",
+                "js/model/Penguin.js", "js/model/Item.js",
                 "js/view/View.js", "js/KeypadListener.js", "js/view/ImageHandler.js",
-                "js/model/MoveHandler.js", "js/model/Enemy.js", "js/model/Shark.js"];
+                "js/model/MoveHandler.js", "js/model/Enemy.js", "js/model/Shark.js",
+                "js/model/Key.js", "js/model/Door.js"];
 
 function loadScript(url, callback)
 {
@@ -45,7 +47,7 @@ function print(param) {
 
 function init() {
   map = Map.loadFromString(MAP_2, TOKEN_2, ENEMIES_2);
-  turtle = map.turtle;
+  protagonist = map.protagonist;
   enemies = map.enemies;
   view = new View(this.map);
 
@@ -60,48 +62,48 @@ function init() {
   keypadListener.getKeyListener("right").addKeyUpEvent(callUpEast);
   keypadListener.getKeyListener("down").addKeyUpEvent(callUpSouth);
   keypadListener.getKeyListener("left").addKeyUpEvent(callUpWest);
-  keypadListener.getKeyListener("space").addKeyDownEvent(callHide);
-  keypadListener.getKeyListener("space").addKeyUpEvent(callUnhide);
+  keypadListener.getKeyListener("space").addKeyDownEvent(callSpecial);
+  keypadListener.getKeyListener("space").addKeyUpEvent(callUnspecial);
 }
 
 function callDownNorth() {
-  turtle.turn(Direction.NORTH());
+  protagonist.turn(Direction.NORTH());
 }
 
 function callDownEast() {
-  turtle.turn(Direction.EAST());
+  protagonist.turn(Direction.EAST());
 }
 
 function callDownSouth() {
-  turtle.turn(Direction.SOUTH());
+  protagonist.turn(Direction.SOUTH());
 }
 
 function callDownWest() {
-  turtle.turn(Direction.WEST());
+  protagonist.turn(Direction.WEST());
 }
 
 function callUpNorth() {
-  turtle.unturn(Direction.NORTH());
+  protagonist.unturn(Direction.NORTH());
 }
 
 function callUpEast() {
-  turtle.unturn(Direction.EAST());
+  protagonist.unturn(Direction.EAST());
 }
 
 function callUpSouth() {
-  turtle.unturn(Direction.SOUTH());
+  protagonist.unturn(Direction.SOUTH());
 }
 
 function callUpWest() {
-  turtle.unturn(Direction.WEST());
+  protagonist.unturn(Direction.WEST());
 }
 
-function callHide() {
-  turtle.hide();
+function callSpecial() {
+  protagonist.special();
 }
 
-function callUnhide() {
-  turtle.unhide();
+function callUnspecial() {
+  protagonist.unspecial();
 }
 
 function repeat() {
@@ -112,7 +114,7 @@ function repeat() {
 }
 
 function modelRepeat() {
-  turtle.move();
+  protagonist.move();
   for (var e = 0; e < enemies.length; e++) {
     enemies[e].move();
   }

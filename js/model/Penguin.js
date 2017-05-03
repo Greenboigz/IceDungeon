@@ -1,7 +1,7 @@
 /**
  * This is the main character of the game
  */
-class Turtle extends Protagonist {
+class Penguin extends Protagonist {
 
   /**
    * Turtle object that traverse the Map
@@ -11,16 +11,16 @@ class Turtle extends Protagonist {
    */
   constructor(x, y, grid) {
     super(x, y, grid);
-    this._hiding = false;
+    this._sliding = false;
   }
 
   /**
-   * Turns the turtle in the correct direction and starts
+   * Turns the penguin in the correct direction and starts
    * @param {Direction} direction
    */
   turn(direction) {
     this._moves.press(direction);
-    if (!this._moving && !this._hiding) {
+    if (!this._moving && !this._sliding) {
       this._moving = true;
     }
   }
@@ -38,7 +38,7 @@ class Turtle extends Protagonist {
    * @return {boolean}
    */
   canTurn() {
-    return !this._hiding && !Direction.compare(this._moves.direction, Direction.NONE()) && !this.isBetween() && !(this._moving && this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery());
+    return !this._sliding && !Direction.compare(this._moves.direction, Direction.NONE()) && !this.isBetween() && !(this._moving && this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery());
   }
 
   /**
@@ -46,7 +46,7 @@ class Turtle extends Protagonist {
    */
   move() {
     this.consume();
-    if (this._alive && ! this._stopped) {
+    if (this._alive && !this._stopped) {
       if (this.canTurn()) {
         this._direction = this._moves.direction;
         this._moving = true;
@@ -55,42 +55,48 @@ class Turtle extends Protagonist {
         var newLoc = Vector.add(this._gridLoc, this.unit_step);
         if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
           this._loc = Vector.add(this._loc, this.step);
-          if (Vector.compare(this._loc, Vector.round(this._loc)), this.speed) {
+          if (Vector.compare(this._loc, Vector.round(this._loc), this.speed)) {
             this._loc = Vector.round(this._loc);
           }
           if (!this.isBetween()) {
             this._gridLoc = this._loc;
             if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
               this._moving = false;
+              this.unslide();
               this.die();
             } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
               this._moving = false;
+              this.unslide();
             } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
-              if (Direction.compare(this._moves.direction, Direction.NONE()) || this._hiding) {
+              if (Direction.compare(this._moves.direction, Direction.NONE()) || this._sliding) {
                 this._moving = false;
               } else {
                 this._direction = this._moves.direction;
               }
+            } else {
+              this.unslide();
             }
           }
         } else {
           this._moving = false;
+          this.unslide();
         }
       }
     }
   }
 
   /**
-   * Consumes the item on the tile if the tile contains an item
+   * Gets the speed of the protagonist
+   * @return {Number}
    */
-  consume() {
-    var tile = this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
-    if (tile.hasItem() && !this.isHiding()) {
-      var item = tile.removeItem();
-      this._points += item.points;
-      this._coins += item.coins;
-      if (item.isKey()) {
-        this._keys.push(item);
+  get speed() {
+    if (this.isSliding()) {
+      return 1/DIV_SIZE;
+    } else {
+      if (this.isOnLand()) {
+        return 1/(3*DIV_SIZE);
+      } else {
+        return 1/(2*DIV_SIZE);
       }
     }
   }
@@ -99,70 +105,64 @@ class Turtle extends Protagonist {
    * Causes the protagonist to perform its special move
    */
   special() {
-    this.hide();
+    this.slide();
   }
 
   unspecial() {
-    this.unhide();
+    this.unslide();
   }
 
   /**
    * Causes the turtle to hide in its shell to avoid being hit by certain
    * projectiles or hits
    */
-  hide() {
-    if (!this._hiding) {
-      this._hiding = true;
+  slide() {
+    if (this.isOnLand() && this._moving) {
+      this._sliding = true;
     }
   }
 
   /**
    * Causes the turtle to come out of its shell to move.
    */
-  unhide() {
-    if (this._hiding) {
-      this._hiding = false;
-    }
+  unslide() {
+    this._sliding = false;
   }
 
   /**
-   * Checks if the turtle is hiding in its shell
+   * Checks if the turtle is sliding in its shell
    * @return {boolean}
    */
-  isHiding() {
-    return this._hiding;
+  isSliding() {
+    return this._sliding;
   }
 
-   /**
-    * Gets the name of the image associated with the turtle
-    * @return {string}
-    */
-   get image() {
-     if (this._alive) {
-       if (this._hiding) {
-         if (!this.isOnLand()) {
-           return "swimming_turtle_hidden";
-         } else {
-           return "turtle_hidden";
-         }
-       } else {
-         if (this._moving) {
-           if (!this.isOnLand()) {
-             return "swimming_turtle";
-           } else {
-             return "turtle";
-           }
-         } else {
-           if (!this.isOnLand()) {
-             return "swimming_turtle_stationary";
-           } else {
-             return "turtle_stationary";
-           }
-         }
-       }
-     } else {
-       return "";
-     }
-   }
+  /**
+   * Gets the name of the image associated with the turtle
+   * @return {string}
+   */
+  get image() {
+    if (this._alive) {
+      if (this._sliding) {
+        return "penguin_sliding";
+      } else {
+        if (this._moving) {
+          if (!this.isOnLand()) {
+            return "swimming_penguin";
+          } else {
+            return "penguin";
+          }
+        } else {
+          if (!this.isOnLand()) {
+            return "swimming_penguin_stationary";
+          } else {
+            return "penguin_stationary";
+          }
+        }
+      }
+    } else {
+      return "";
+    }
+  }
 
 }

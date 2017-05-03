@@ -10,6 +10,7 @@ class Item {
     this._pointValue = points;
     this._coinValue = coins;
     this._image = image;
+    this._is_key = false;
   }
 
   /**
@@ -37,6 +38,14 @@ class Item {
   }
 
   /**
+   * Checks if the item is a key
+   * @return {boolean}
+   */
+  isKey() {
+    return this._is_key;
+  }
+
+  /**
    * Creates an item from the associated string
    * @param {string} string
    * @return {Item}
@@ -58,6 +67,9 @@ class Item {
         break;
       case '*':
         item = new Star();
+        break;
+      case "r":
+        item = new Key("red");
         break;
       default:
         item = null;

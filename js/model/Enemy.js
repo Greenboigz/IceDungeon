@@ -92,12 +92,16 @@ class Enemy {
     }
   }
 
+  get speed() {
+    return this._speed / PIXELS_PER_DIV;
+  }
+
   /**
    * Gets the step vector of the enemy
    * @return {Vector}
    */
   get step() {
-    return Vector.scale(this._direction.toVector(), this._speed / PIXELS_PER_DIV);
+    return Vector.scale(this._direction.toVector(), this.speed);
   }
 
   /**
