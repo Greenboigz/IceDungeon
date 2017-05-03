@@ -86,7 +86,7 @@ class Enemy {
   moveForward() {
     if (this._moving) {
       this._loc = Vector.add(this._loc, this.step);
-      if (Vector.compare(this.front, this.back)) {
+      if (Vector.compare(this.front, this.back, this.speed)) {
         this._gridLoc = this._loc;
       }
     }

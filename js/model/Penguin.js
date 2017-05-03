@@ -55,14 +55,13 @@ class Penguin extends Protagonist {
         var newLoc = Vector.add(this._gridLoc, this.unit_step);
         if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
           this._loc = Vector.add(this._loc, this.step);
-          if (Vector.compare(this._loc, Vector.round(this._loc), this.speed)) {
+          if (Vector.compare(this._loc, Vector.round(this._loc), this.speed/2)) {
             this._loc = Vector.round(this._loc);
           }
           if (!this.isBetween()) {
             this._gridLoc = this._loc;
             if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
               this._moving = false;
-              this.unslide();
               this.die();
             } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
               this._moving = false;
@@ -73,9 +72,10 @@ class Penguin extends Protagonist {
               } else {
                 this._direction = this._moves.direction;
               }
-            } else {
-              this.unslide();
             }
+          }
+          if (this.isSliding() && !this.isOnLand()) {
+            this.unslide();
           }
         } else {
           this._moving = false;

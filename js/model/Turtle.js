@@ -46,7 +46,7 @@ class Turtle extends Protagonist {
    */
   move() {
     this.consume();
-    if (this._alive && ! this._stopped) {
+    if (this._alive && !this._stopped) {
       if (this.canTurn()) {
         this._direction = this._moves.direction;
         this._moving = true;
@@ -55,7 +55,7 @@ class Turtle extends Protagonist {
         var newLoc = Vector.add(this._gridLoc, this.unit_step);
         if (this._grid.getTile(newLoc.x, newLoc.y).isTraversible()) {
           this._loc = Vector.add(this._loc, this.step);
-          if (Vector.compare(this._loc, Vector.round(this._loc)), this.speed) {
+          if (Vector.compare(this._loc, Vector.round(this._loc)), this.speed/2) {
             this._loc = Vector.round(this._loc);
           }
           if (!this.isBetween()) {
