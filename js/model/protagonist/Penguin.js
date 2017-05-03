@@ -12,6 +12,7 @@ class Penguin extends Protagonist {
   constructor(x, y, grid) {
     super(x, y, grid);
     this._sliding = false;
+    this._tryToSlide = false;
   }
 
   /**
@@ -50,6 +51,7 @@ class Penguin extends Protagonist {
       if (this.canTurn()) {
         this._direction = this._moves.direction;
         this._moving = true;
+        this._sliding = this._tryToSlide && this.isOnLand();
       }
       if (this._moving) {
         var newLoc = Vector.add(this._gridLoc, this.unit_step);
@@ -65,22 +67,23 @@ class Penguin extends Protagonist {
               this.die();
             } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
               this._moving = false;
-              this.unslide();
             } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
-              if (Direction.compare(this._moves.direction, Direction.NONE()) || this._sliding) {
+              this._sliding = false;
+              if (Direction.compare(this._moves.direction, Direction.NONE())) {
                 this._moving = false;
               } else {
                 this._direction = this._moves.direction;
               }
+            } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
+              this._sliding = this._tryToSlide;
             }
-          }
-          if (this.isSliding() && !this.isOnLand()) {
-            this.unslide();
           }
         } else {
           this._moving = false;
-          this.unslide();
         }
+      }
+      if (!this._moving) {
+        this._sliding = false;
       }
     }
   }
@@ -117,16 +120,14 @@ class Penguin extends Protagonist {
    * projectiles or hits
    */
   slide() {
-    if (this.isOnLand() && this._moving) {
-      this._sliding = true;
-    }
+    this._tryToSlide = true;
   }
 
   /**
    * Causes the turtle to come out of its shell to move.
    */
   unslide() {
-    this._sliding = false;
+    this._tryToSlide = false;
   }
 
   /**
