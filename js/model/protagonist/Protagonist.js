@@ -187,7 +187,18 @@ class Protagonist {
     var water = new Water(0,0);
     var tile_front = this._grid.getTile(this.front.x, this.front.y);
     var tile_back = this._grid.getTile(this.back.x, this.back.y);
-    return !Tile.compare(tile_front, water) || !Tile.compare(tile_back, water);
+    return !Tile.compare(tile_front, water) && !Tile.compare(tile_back, water);
+  }
+
+  /**
+   * Checks if the protagonist is on lond
+   * @return {boolean}
+   */
+  isInWater() {
+    var water = new Water(0,0);
+    var tile_front = this._grid.getTile(this.front.x, this.front.y);
+    var tile_back = this._grid.getTile(this.back.x, this.back.y);
+    return Tile.compare(tile_front, water) || Tile.compare(tile_back, water);
   }
 
   /**

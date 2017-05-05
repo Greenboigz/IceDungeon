@@ -48,10 +48,10 @@ class Penguin extends Protagonist {
   move() {
     this.consume();
     if (this._alive && !this._stopped) {
+
       if (this.canTurn()) {
         this._direction = this._moves.direction;
         this._moving = true;
-        this._sliding = this._tryToSlide && this.isOnLand();
       }
       if (this._moving) {
         var newLoc = Vector.add(this._gridLoc, this.unit_step);
@@ -60,22 +60,28 @@ class Penguin extends Protagonist {
           if (Vector.compare(this._loc, Vector.round(this._loc), this.speed/2)) {
             this._loc = Vector.round(this._loc);
           }
+          var tile = this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
           if (!this.isBetween()) {
             this._gridLoc = this._loc;
-            if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
+            if (tile.isDeadly()) {
               this._moving = false;
               this.die();
-            } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
+            }
+            if (tile.isInterrupting()) {
               this._moving = false;
-            } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
+            }
+            if (!tile.isSlippery()) {
               this._sliding = false;
               if (Direction.compare(this._moves.direction, Direction.NONE())) {
                 this._moving = false;
+                console.log("OH NO!");
               } else {
                 this._direction = this._moves.direction;
               }
-            } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
-              this._sliding = this._tryToSlide;
+            }
+          } else {
+            if (this._tryToSlide && !this.isInWater()) {
+              this._sliding = true;
             }
           }
         } else {
