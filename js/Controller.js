@@ -58,7 +58,8 @@ function print(param) {
 
 function init() {
   map = Map.loadFromString(MAP_2, TOKEN_2, ENEMIES_2);
-  protagonist = map.protagonist;
+  protagonist = new Penguin(Math.floor(this._width/2), 1, map);
+  map._protagonist = protagonist;
   enemies = map.enemies;
   view = new View(this.map);
 

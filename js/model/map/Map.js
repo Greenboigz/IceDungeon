@@ -116,7 +116,7 @@ class Map {
     this._width = width;
     this._height = height;
     this._grid = [];
-    this._protagonist = new Penguin(Math.floor(this._width/2), 1, this);
+    this._protagonist = null;
     this._enemies = [];
 
     this.buildGrid();
@@ -160,6 +160,9 @@ class Map {
    * @param {Tile} tile
    */
   setTile(tile) {
+    if (this._grid[tile.location.y][tile.location.x]._prevState != null) {
+      tile._prevState = this._grid[tile.location.y][tile.location.x]._prevState;
+    }
     this._grid[tile.location.y][tile.location.x] = tile;
   }
 
@@ -173,6 +176,16 @@ class Map {
         this._grid[y].push(new SnowWall(x, y));
       }
     }
+  }
+
+  /**
+   * Checks if the location entered is valid
+   * @param {Number} x
+   * @param {Number} y
+   * @return {boolean}
+   */
+  isValidLocation(x, y) {
+    return x >= 0 && x < this._width && y >= 0 && y < this._height;
   }
 
   /**
@@ -238,8 +251,13 @@ class Map {
 
 class BaseMap extends Map {
 
-  constructor() {
-    super(15, 15);
+  /**
+   * Builds a map with just an outer wall
+   * @param {Number} width
+   * @param {Number} height
+   */
+  constructor(width, height) {
+    super(width, height);
 
     this.clearInit();
   }
@@ -250,7 +268,7 @@ class BaseMap extends Map {
   clearInit() {
     for (var x = 1; x < this._width - 1; x++) {
       for (var y = 1; y < this._height - 1; y++) {
-        this.setTile(new Space(x,y));
+        this.setTile(new Water(x,y));
       }
     }
   }

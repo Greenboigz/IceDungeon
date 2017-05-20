@@ -5,11 +5,13 @@ class Item {
    * @param {number} points
    * @param {number} coins
    * @param {string} image
+   * @param {string} string
    */
-  constructor(points, coins, image) {
+  constructor(points, coins, image, string) {
     this._pointValue = points;
     this._coinValue = coins;
     this._image = image;
+    this._string = string;
     this._is_key = false;
   }
 
@@ -35,6 +37,21 @@ class Item {
    */
   get image() {
     return this._image;
+  }
+
+  /**
+   * Gets the string of the item object
+   * @param {string} string
+   */
+  get string() {
+    return this._string;
+  }
+
+  /**
+   * Copies the item object to a new instance
+   */
+  copy() {
+    return Item.createItem(this.string);
   }
 
   /**

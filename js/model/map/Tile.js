@@ -1,3 +1,5 @@
+TILE_LETTERS = ["W"," ","w"];
+
 class Tile {
 
   /**
@@ -22,6 +24,8 @@ class Tile {
     this._interrupting = false;
     this._walkable = false;
     this._deadly = false;
+
+    this._prevState = null;
   }
 
   /**
@@ -64,6 +68,44 @@ class Tile {
     if (this._hasItem) {
       return this._item;
     }
+  }
+
+  /**
+   * Saves the current state of the tile
+   */
+  storeState() {
+    if (this._prevState == null) {
+      this._prevState = this.copy();
+    }
+  }
+
+  /**
+   * Restores the previous state of the tile
+   */
+  restoreState() {
+    if (this._prevState != null) {
+      this._type = this._prevState._type;
+      this._string = this._prevState._string;
+      this._image = this._prevState._image;
+
+      this._item = this._prevState._item;
+      this._hasItem = this._prevState._hasItem;
+      this._storable = this._prevState._storable;
+      this._traversible = this._prevState._traversible;
+      this._slippery = this._prevState._slippery;
+      this._interrupting = this._prevState._interrupting;
+      this._walkable = this._prevState._walkable;
+      this._deadly = this._prevState._deadly;
+
+      this._prevState = null;
+    }
+  }
+
+  /**
+   * CLear stored state
+   */
+  clearStored() {
+    this._prevState = null;
   }
 
   /**
@@ -141,6 +183,20 @@ class Tile {
    }
 
    /**
+    * Copies the tile to the new coordinates
+    * @param {Number} x
+    * @param {Number} y
+    * @return {Tile}
+    */
+   copy(x, y) {
+     var tile = Tile.createTile(x, y, this._string);
+     if (this.hasItem()) {
+       tile._item = this._item.copy();
+     }
+     return tile;
+   }
+
+   /**
     * Checks if the block is deadly
     * @return {boolean}
     */
@@ -162,20 +218,16 @@ class Tile {
      * Creates a tile from the provided information
      * @param {number} x
      * @param {number} y
-     * @param {string} character
+     * @param {string} type
      * @return {Tile}
      */
-    static createTile(x, y, character) {
+    static createTile(x, y, type) {
       var tile;
-      switch (character) {
+      switch (type) {
         case 'w':
           tile = new SnowWall(x, y);
           break;
         case ' ':
-        case 'b':
-        case 'B':
-        case 't':
-        case 'T':
           tile = new Ice(x, y);
           break;
         case 'W':
@@ -195,6 +247,7 @@ class Tile {
     }
 
 }
+
 
 class SnowWall extends Tile {
 
@@ -233,7 +286,7 @@ class Water extends Tile {
    * @param {number} y
    */
   constructor(x, y) {
-    super(x, y, 2, " ", "water");
+    super(x, y, 2, "W", "water");
     this._traversible = true;
     this._storable = true;
   }

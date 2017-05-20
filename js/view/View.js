@@ -61,6 +61,8 @@ class View {
     this.imageHandler.loadImage("ice", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("snow", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
     this.imageHandler.loadImage("water", 8, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("builder", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
+    this.imageHandler.loadImage("editor", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
   /**

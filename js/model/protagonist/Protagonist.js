@@ -269,6 +269,10 @@ class Protagonist {
     return this._loc = location;
   }
 
+  get map() {
+    return this._grid;
+  }
+
   get gridLocation() {
     return this._gridLoc;
   }

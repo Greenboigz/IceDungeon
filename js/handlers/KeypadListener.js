@@ -1,5 +1,6 @@
 var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 var TESTING = false;
+var CTRL = -1;
 
 /**
  * Base class to handle any key event listener
@@ -8,6 +9,9 @@ class KeyHandler {
 
   constructor() {
     this.keys = [];
+
+    this._ctrlKey = false;
+    this._ctrl = false;
 
     document.addEventListener("keydown", this.keyDownEvent.bind(this), false);
     //document.addEventListener("keypress", this.keyPressEvent.bind(this), false);
@@ -22,10 +26,16 @@ class KeyHandler {
     if (TESTING) {
       console.log("keydown{" + event.keyCode + "}");
     }
+    var keyCode = event.keyCode;
+    if (this._ctrl && event.ctrlKey && !this._ctrlKey) {
+      this._ctrlKey = true;
+      keyCode = CTRL;
+    }
     for (var i = 0; i < this.keys.length; i++) {
       var keyListener = this.keys[i];
-      if (event.keyCode == keyListener.keyCode) {
+      if (keyCode == keyListener.keyCode) {
         keyListener.keyDown();
+        break;
       }
     }
   }
@@ -42,6 +52,7 @@ class KeyHandler {
       var keyListener = this.keys[i];
       if (event.keyCode == keyListener.keyCode) {
         keyListener.keyPress();
+        break;
       }
     }
   }
@@ -54,10 +65,16 @@ class KeyHandler {
     if (TESTING) {
       console.log("keyup{" + event.keyCode + "}");
     }
+    var keyCode = event.keyCode;
+    if (this._ctrl && !event.ctrlKey && this._ctrlKey) {
+      this._ctrlKey = false;
+      keyCode = CTRL;
+    }
     for (var i = 0; i < this.keys.length; i++) {
       var keyListener = this.keys[i];
-      if (event.keyCode == keyListener.keyCode) {
+      if (keyCode == keyListener.keyCode) {
         keyListener.keyUp();
+        break;
       }
     }
   }
@@ -68,6 +85,10 @@ class KeyHandler {
    * @param {number} keyNumber
    */
   addKeyListener(keyName, keyNumber) {
+    if (keyName == "ctrl") {
+      this._ctrl = true;
+      keyNumber = CTRL;
+    }
     this.keys.push(new KeyListener(keyName, keyNumber));
   }
 

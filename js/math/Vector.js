@@ -9,6 +9,10 @@ class Vector {
     return "{" + this.x + "," + this.y + "}";
   }
 
+  copy() {
+    return new Vector(this.x, this.y);
+  }
+
   /**
    * Adds the other to itself and returns
    * @param {Vector} vec1
