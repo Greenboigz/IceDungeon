@@ -146,6 +146,7 @@ function init() {
   keypadListener.addKeyListener("e", 69);
   keypadListener.addKeyListener("d", 68);
   keypadListener.addKeyListener("ctrl", CTRL);
+  keypadListener.addKeyListener("shift", SHIFT);
 
   keypadListener.getKeyListener("up").addKeyDownEvent(callDownNorth);
   keypadListener.getKeyListener("right").addKeyDownEvent(callDownEast);
@@ -159,6 +160,8 @@ function init() {
   keypadListener.getKeyListener("space").addKeyUpEvent(callUnspecial);
   keypadListener.getKeyListener("ctrl").addKeyDownEvent(callControl);
   keypadListener.getKeyListener("ctrl").addKeyUpEvent(callUncontrol);
+  keypadListener.getKeyListener("shift").addKeyDownEvent(callShift);
+  keypadListener.getKeyListener("shift").addKeyUpEvent(callUnshift);
   keypadListener.getKeyListener("q").addKeyDownEvent(callUpTile);
   keypadListener.getKeyListener("a").addKeyDownEvent(callDownTile);
   keypadListener.getKeyListener("w").addKeyDownEvent(callUpItem);
@@ -208,13 +211,19 @@ function callUnspecial() {
 }
 
 function callControl() {
-  protagonist.highlight();
-  console.log("Control Down");
+  protagonist.drag();
 }
 
 function callUncontrol() {
+  protagonist.undrag();
+}
+
+function callShift() {
+  protagonist.highlight();
+}
+
+function callUnshift() {
   protagonist.unhighlight();
-  console.log("Control Up");
 }
 
 function callUpTile() {

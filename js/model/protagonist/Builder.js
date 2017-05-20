@@ -13,8 +13,12 @@ class Builder extends Protagonist {
     super(x, y, grid);
     this._editing = false;
     this.findTile();
+
     this._highlighting = false;
     this._highlightBase = null;
+
+    this._dragging = false;
+    this._dragBase = null;
   }
 
   /**
@@ -28,13 +32,25 @@ class Builder extends Protagonist {
       this._loc = temp;
       this.findTile();
       this.highlightTiles();
+      this.dragTiles();
     } else {
       console.log("Turn Failed");
     }
   }
 
   /**
-   * Highlight the tiles with the given highlight base tile
+   * Drags the tiles with the given drag base tile
+   */
+  dragTiles() {
+    if (this._dragging) {
+      this._grid.setTile(this._grid.getTile(
+        this._dragBase.x, this._dragBase.y
+      ).copy(this._gridLoc.x, this._gridLoc.y));
+    }
+  }
+
+  /**
+   * Highlights the tiles with the given highlight base tile
    */
   highlightTiles() {
     if (this._highlighting) {
@@ -86,19 +102,48 @@ class Builder extends Protagonist {
 
   }
 
+  /**
+   * Turns on the highlighter function
+   */
   highlight() {
-    if (this._editing) {
+    if (this._editing && !this._dragging) {
       this._highlighting = true;
       this._highlightBase = this._gridLoc.copy();
     }
   }
 
+  /**
+   * Turns off the highlighter function
+   */
   unhighlight() {
-    this._highlighting = false;
-    for (var x = 0; x <= this._grid.width; x++) {
-      for (var y = 0; y <= this._grid.height; y++) {
-        this._grid.getTile(x,y).clearStored();
+    if (this._highlighting) {
+      for (var x = 0; x <= this._grid.width; x++) {
+        for (var y = 0; y <= this._grid.height; y++) {
+          this._grid.getTile(x,y).clearStored();
+        }
       }
+      this._highlighting = false;
+      this._highlightBase = null;
+    }
+  }
+
+  /**
+   * Turns on the dragging function
+   */
+  drag() {
+    if (this._editing && !this._highlighting) {
+      this._dragging = true;
+      this._dragBase = this._gridLoc.copy();
+    }
+  }
+
+  /**
+   * Turns off the dragging function
+   */
+  undrag() {
+    if (this._dragging) {
+      this._dragging = false;
+      this._dragBase = null;
     }
   }
 

@@ -1,6 +1,7 @@
 var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 var TESTING = false;
 var CTRL = -1;
+var SHIFT = -2;
 
 /**
  * Base class to handle any key event listener
@@ -12,6 +13,9 @@ class KeyHandler {
 
     this._ctrlKey = false;
     this._ctrl = false;
+
+    this._shiftKey = false;
+    this._shift = false;
 
     document.addEventListener("keydown", this.keyDownEvent.bind(this), false);
     //document.addEventListener("keypress", this.keyPressEvent.bind(this), false);
@@ -30,6 +34,9 @@ class KeyHandler {
     if (this._ctrl && event.ctrlKey && !this._ctrlKey) {
       this._ctrlKey = true;
       keyCode = CTRL;
+    } else if (this._shift && event.shiftKey && !this._shiftKey) {
+      this._shiftKey = true;
+      keyCode = SHIFT;
     }
     for (var i = 0; i < this.keys.length; i++) {
       var keyListener = this.keys[i];
@@ -69,6 +76,9 @@ class KeyHandler {
     if (this._ctrl && !event.ctrlKey && this._ctrlKey) {
       this._ctrlKey = false;
       keyCode = CTRL;
+    } else if (this._shift && !event.shiftKey && this._shiftKey) {
+      this._shiftKey = false;
+      keyCode = SHIFT;
     }
     for (var i = 0; i < this.keys.length; i++) {
       var keyListener = this.keys[i];
@@ -88,6 +98,9 @@ class KeyHandler {
     if (keyName == "ctrl") {
       this._ctrl = true;
       keyNumber = CTRL;
+    } else if (keyName == "shift") {
+      this._shift = true;
+      keyNumber = SHIFT;
     }
     this.keys.push(new KeyListener(keyName, keyNumber));
   }
