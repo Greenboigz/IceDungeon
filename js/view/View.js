@@ -7,25 +7,35 @@ class View {
    * @param {Map} map
    */
   constructor(map) {
-    var canvas = document.createElement("canvas");
-    canvas.width = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
-    canvas.height = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
-
-    this.ctx = canvas.getContext("2d");
     this.map = map;
+    this.local = true;
     this.protagonist = map.protagonist;
     this.enemies = map.enemies;
     this.IMAGES = {};
     this.divImg = document.getElementById("divGameImg");
 
+    this.imageHandler = new ImageHandler(this.ctx);
+    this.loadImages();
+  }
+
+  set local(local) {
+    var canvas = document.createElement("canvas");
+    if (local) {
+      canvas.width = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
+      canvas.height = (DISPLAY_DIM+2)*PIXELS_PER_DIV;
+    } else {
+      canvas.width = (this.map.width+2)*PIXELS_PER_DIV;
+      canvas.height = (this.map.height+2)*PIXELS_PER_DIV;
+    }
+    this._local = local;
+    this.ctx = canvas.getContext("2d");
+
     var div = document.getElementById("divGameStage");
     if (div.childNodes[0]) {
       div.removeChild(div.childNodes[0]);
     }
-    div.appendChild(canvas);
 
-    this.imageHandler = new ImageHandler(this.ctx);
-    this.loadImages();
+    div.appendChild(canvas);
   }
 
   /**
@@ -65,13 +75,22 @@ class View {
     this.imageHandler.loadImage("editor", 1, PIXELS_PER_DIV, PIXELS_PER_DIV);
   }
 
+  draw() {
+    if (this._local) {
+      this.drawLocal();
+    } else {
+      this.drawFull();
+    }
+  }
+
   /**
    * Draws the canvas
    */
-  draw() {
+  drawFull() {
     this.drawMap();
     this.drawProtagonist();
     this.drawEnemies();
+    this.drawBorder();
   }
 
   /**
@@ -79,7 +98,7 @@ class View {
    */
   drawEnemies() {
     for (var enemy in this.enemies) {
-      var location = Vector.add(tile.location, Vector.subtract(center, Protagonist.location));
+      var location = Vector.add(tile.location, Vector.subtract(center, this.protagonist.location));
       this.imageHandler.drawImage(tile.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
       if (tile.hasItem()) {
         this.imageHandler.drawImage(tile.item.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
@@ -91,9 +110,17 @@ class View {
    * Draws the Protagonist
    */
   drawProtagonist() {
-    this.imageHandler.drawImage(this.protagonist.image, this.protagonist.location.x * PIXELS_PER_DIV,
-      (this.map.height - this.protagonist.location.y - 1) * PIXELS_PER_DIV,
+    this.imageHandler.drawImage(this.protagonist.image, (this.protagonist.location.x + 1) * PIXELS_PER_DIV,
+      (this.map.height - this.protagonist.location.y) * PIXELS_PER_DIV,
       this.protagonist.direction.radians);
+  }
+
+  drawBorder() {
+    this.ctx.beginPath();
+    this.ctx.lineWidth=PIXELS_PER_DIV;
+    this.ctx.strokeStyle="black";
+    this.ctx.rect(PIXELS_PER_DIV/2,PIXELS_PER_DIV/2,(this.map.width+1) * PIXELS_PER_DIV, (this.map.height+1) * PIXELS_PER_DIV);
+    this.ctx.stroke();
   }
 
   /**
@@ -104,9 +131,9 @@ class View {
     for (x = 0; x < this.map.width; x++) {
       for (y = 0; y < this.map.height; y++) {
         var tile = this.map.getTile(x,y)
-        this.imageHandler.drawImage(tile.image, x * PIXELS_PER_DIV, (this.map.height - y - 1) * PIXELS_PER_DIV, 0);
+        this.imageHandler.drawImage(tile.image, (x + 1) * PIXELS_PER_DIV, (this.map.height - y) * PIXELS_PER_DIV, 0);
         if (tile.hasItem()) {
-          this.imageHandler.drawImage(tile.item.image, x * PIXELS_PER_DIV, (this.map.height - y - 1) * PIXELS_PER_DIV, 0);
+          this.imageHandler.drawImage(tile.item.image, (x + 1) * PIXELS_PER_DIV, (this.map.height - y) * PIXELS_PER_DIV, 0);
         }
       }
     }
@@ -119,7 +146,7 @@ class View {
     this.drawLocalMap();
     this.drawLocalEnemies();
     this.drawLocalProtagonist();
-    this.drawBorder();
+    this.drawLocalBorder();
   }
 
   /**
@@ -130,7 +157,7 @@ class View {
     var center = new Vector(Math.floor(DISPLAY_DIM/2)+1, Math.floor(DISPLAY_DIM/2));
     for (i = -1; i < DISPLAY_DIM+2; i++) {
       for (j = -1; j < DISPLAY_DIM+2; j++) {
-        var tile = this.map.getTile(i - center.x + protagonist.gridLocation.x, j - center.y + protagonist.gridLocation.y);
+        var tile = this.map.getTile(i - center.x + this.protagonist.gridLocation.x, j - center.y + this.protagonist.gridLocation.y);
         var location = Vector.add(tile.location, Vector.subtract(center, protagonist.location));
         this.imageHandler.drawImage(tile.image, location.x * PIXELS_PER_DIV, (DISPLAY_DIM - location.y) * PIXELS_PER_DIV, 0);
         if (tile.hasItem()) {
@@ -140,6 +167,9 @@ class View {
     }
   }
 
+  /**
+   * Draws the protagonist at the center of the local map
+   */
   drawLocalProtagonist() {
     if (this.protagonist.isAlive()) {
       this.imageHandler.drawImage(this.protagonist.image, Math.floor(DISPLAY_DIM/2 + 1) * PIXELS_PER_DIV,
@@ -161,7 +191,7 @@ class View {
     }
   }
 
-  drawBorder() {
+  drawLocalBorder() {
     this.ctx.beginPath();
     this.ctx.lineWidth=PIXELS_PER_DIV;
     this.ctx.strokeStyle="black";

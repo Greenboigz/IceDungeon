@@ -258,7 +258,7 @@ class Protagonist {
    * @return {Vector}
    */
   get location() {
-    return this._loc;
+    return this._loc.copy();
   }
 
   /**
@@ -274,7 +274,7 @@ class Protagonist {
   }
 
   get gridLocation() {
-    return this._gridLoc;
+    return this._gridLoc.copy();
   }
 
   /**

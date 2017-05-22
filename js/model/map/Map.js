@@ -205,16 +205,34 @@ class Map {
     for (var y = this._height - 1; y >= 0; y--) {
       var line = "";
       for (var x = 0; x < this._width; x++) {
-        if (this.protagonist.getLocation().x == x && this.protagonist.getLocation().y == y) {
-          line += "m";
-        } else {
-          line += this.getTile(x,y).toString();
-        }
+        var tile = this.getTile(x,y);
+        line += tile.toString();
       }
       output += line + "\n";
     }
     return output;
   }
+
+  /**
+   * Prints the map to the console
+   * @return {string}
+   */
+  toItemString() {
+    var output = "";
+    for (var y = this._height - 1; y >= 0; y--) {
+      var line = "";
+      for (var x = 0; x < this._width; x++) {
+        var tile = this.getTile(x,y);
+        if (tile.hasItem()) {
+          line += tile.item.toString();
+        } else {
+          line += " ";
+        }
+      }
+      output += line + "\n";
+    }
+    return output;
+    }
 
   /**
    * Loads a map object from the file (fileName)

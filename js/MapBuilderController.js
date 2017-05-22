@@ -40,7 +40,7 @@ function loadCallback(name) {
   loaded++;
   //console.log(name + " loaded\n");
   if (loaded >= includes.length) {
-    setTimeout(function() { init(); repeat(); }, INIT_RELOAD);
+    setTimeout(function() { init(); repeat(); modelRepeat(); }, INIT_RELOAD);
   }
 }
 
@@ -55,6 +55,28 @@ function load_files() {
 function print(param) {
   console.log("param = " + param);
 }
+
+/**
+ * Creates a text file from the input text
+ * @param {string} fileName
+ * @param {string} text
+ */
+function exportText(fileName, text) {
+  var data = new Blob([text], {type: 'text/plain'});
+
+  var textFile = window.URL.createObjectURL(data);
+
+  var a = window.document.createElement('a');
+  a.href = textFile;
+  a.download = fileName;
+
+  // Append anchor to body.
+  document.body.appendChild(a)
+  a.click();
+
+  // Remove anchor from body
+  document.body.removeChild(a);
+};
 
 function getAllUrlParams(url) {
   // get query string from url (optional) or window
@@ -147,6 +169,7 @@ function init() {
   keypadListener.addKeyListener("d", 68);
   keypadListener.addKeyListener("ctrl", CTRL);
   keypadListener.addKeyListener("shift", SHIFT);
+  keypadListener.addKeyListener("enter", 13)
 
   keypadListener.getKeyListener("up").addKeyDownEvent(callDownNorth);
   keypadListener.getKeyListener("right").addKeyDownEvent(callDownEast);
@@ -162,6 +185,7 @@ function init() {
   keypadListener.getKeyListener("ctrl").addKeyUpEvent(callUncontrol);
   keypadListener.getKeyListener("shift").addKeyDownEvent(callShift);
   keypadListener.getKeyListener("shift").addKeyUpEvent(callUnshift);
+  keypadListener.getKeyListener("enter").addKeyDownEvent(callEnter);
   keypadListener.getKeyListener("q").addKeyDownEvent(callUpTile);
   keypadListener.getKeyListener("a").addKeyDownEvent(callDownTile);
   keypadListener.getKeyListener("w").addKeyDownEvent(callUpItem);
@@ -250,18 +274,21 @@ function callDownEnemy() {
   console.log("Enemy Down");
 }
 
+function callEnter() {
+  exportText("tile_map.txt", map.toString());
+  exportText("item_map.txt", map.toItemString());
+
+}
+
 function repeat() {
   //document.getElementById("divGameStage").innerHTML = map.toString();
-  view.drawLocal();
-  modelRepeat();
+  view.draw();
   setTimeout(repeat, RELOAD);
 }
 
 function modelRepeat() {
   protagonist.move();
-  for (var e = 0; e < enemies.length; e++) {
-    enemies[e].move();
-  }
+  setTimeout(modelRepeat, 4*RELOAD);
 }
 
 load_files();

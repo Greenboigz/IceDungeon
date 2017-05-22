@@ -58,7 +58,7 @@ function print(param) {
 
 function init() {
   map = Map.loadFromString(MAP_2, TOKEN_2, ENEMIES_2);
-  protagonist = new Penguin(Math.floor(this._width/2), 1, map);
+  protagonist = new Penguin(Math.floor(map._width/2), 1, map);
   map._protagonist = protagonist;
   enemies = map.enemies;
   view = new View(this.map);
@@ -120,7 +120,7 @@ function callUnspecial() {
 
 function repeat() {
   //document.getElementById("divGameStage").innerHTML = map.toString();
-  view.drawLocal();
+  view.draw();
   modelRepeat();
   setTimeout(repeat, RELOAD);
 }

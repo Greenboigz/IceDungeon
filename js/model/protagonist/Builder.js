@@ -19,6 +19,8 @@ class Builder extends Protagonist {
 
     this._dragging = false;
     this._dragBase = null;
+
+    this._pressTime = null;
   }
 
   /**
@@ -26,16 +28,27 @@ class Builder extends Protagonist {
    * @param {Direction} direction
    */
   turn(direction) {
+    this._moves.press(direction);
+    this._pressTime = new Date().getTime() / 1000;
+
     var temp = Vector.add(this._gridLoc, direction.toVector());
     if (this._grid.isValidLocation(temp.x, temp.y)) {
       this._gridLoc = temp;
       this._loc = temp;
-      this.findTile();
       this.highlightTiles();
       this.dragTiles();
+      this.findTile();
     } else {
       console.log("Turn Failed");
     }
+  }
+
+  /**
+   * Handles the button release for the turtle
+   * @param {Direction} direction
+   */
+  unturn(direction) {
+    this._moves.release(direction);
   }
 
   /**
@@ -75,18 +88,20 @@ class Builder extends Protagonist {
   }
 
   /**
-   * Handles the button release for the turtle
-   * @param {Direction} direction
-   */
-  unturn(direction) {
-
-  }
-
-  /**
    * Moves the builder forward if it can
    */
   move() {
-
+    var seconds = new Date().getTime() / 1000;
+    if (seconds - this._pressTime > 0.5) {
+      var temp = Vector.add(this._gridLoc, this._moves.direction.toVector());
+      if (this._grid.isValidLocation(temp.x, temp.y)) {
+        this._gridLoc = temp;
+        this._loc = temp;
+        this.highlightTiles();
+        this.dragTiles();
+        this.findTile();
+      }
+    }
   }
 
   /**
@@ -156,6 +171,7 @@ class Builder extends Protagonist {
     for (var t = 0; t < TILE_LETTERS.length; t++) {
       if (TILE_LETTERS[t] == tile) {
         this._tile = t;
+        break;
       }
     }
     if (this._tile == -1) {
