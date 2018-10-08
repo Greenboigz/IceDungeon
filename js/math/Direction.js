@@ -1,4 +1,4 @@
-const NONE = 0, NORTH = 1, EAST = 2, SOUTH = 3, WEST = 4
+const NONE = 0, NORTH = 'North', EAST = 'East', SOUTH = 'South', WEST = 'West'
 
 /**
  * This class represents the direction of the skater
@@ -13,6 +13,7 @@ class Direction {
 
   /**
    * The constructor for the enum class representing direction
+   * @param {string} direction 
    */
   constructor(direction) {
     this.val = direction;

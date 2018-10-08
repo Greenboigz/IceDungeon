@@ -48,7 +48,7 @@ class Protagonist {
    * @return {boolean}
    */
   canTurn() {
-    return !Direction.compare(this._moves.direction, Direction.NONE()) && !this.isBetween() && !(this._moving && this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery());
+    return !Direction.compare(this._moves.direction, Direction.NONE()) && !this.isBetween() && !(this._moving && this.tile.isSlippery());
   }
 
   /**
@@ -84,12 +84,12 @@ class Protagonist {
           }
           if (!this.isBetween()) {
             this._gridLoc = Vector.round(this._loc);
-            if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isDeadly()) {
+            if (this.tile.isDeadly()) {
               this._moving = false;
               this.die();
-            } else if (this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isInterrupting()) {
+            } else if (this.tile.isInterrupting()) {
               this._moving = false;
-            } else if (!this._grid.getTile(this._gridLoc.x, this._gridLoc.y).isSlippery()) {
+            } else if (!this.tile.isSlippery()) {
               this._direction = this._moves.direction;
             }
           }
@@ -104,7 +104,7 @@ class Protagonist {
    * Consumes the item on the tile if the tile contains an item
    */
   consume() {
-    var tile = this._grid.getTile(this._gridLoc.x, this._gridLoc.y);
+    var tile = this.tile;
     if (tile.hasItem()) {
       var item = tile.removeItem();
       this._points += item.points;

@@ -1,0 +1,24 @@
+{
+    "enemies": [
+        {
+            "type": "shark",
+            "coordinate": [6,5],
+            "direction": "East"
+        },
+        {
+            "type": "shark",
+            "coordinate": [8,7],
+            "direction": "East"
+        },
+        {
+            "type": "shark",
+            "coordinate": [10,9],
+            "direction": "East"
+        },
+        {
+            "type": "shark",
+            "coordinate": [12,11],
+            "direction": "East"
+        }
+    ]
+}

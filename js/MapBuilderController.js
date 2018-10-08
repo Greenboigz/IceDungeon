@@ -1,5 +1,5 @@
 var map, protagonist, view, keypadListener, loaded = 0;
-var INIT_RELOAD = 100, RELOAD = 20, DIV_SIZE = 8, PIXELS_PER_DIV = 32;
+var INIT_RELOAD = 500, RELOAD = 20, DIV_SIZE = 8, PIXELS_PER_DIV = 32;
 
 var handlerIncludes = ["js/handlers/KeypadListener.js",
                        "js/handlers/MoveHandler.js"];

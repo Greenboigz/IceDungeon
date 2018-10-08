@@ -124,4 +124,15 @@ class Enemy {
     return enemy;
   }
 
+  /**
+   * Creates any enemy from the input and adds it to the map
+   * @param {string} name
+   * @param {[number]} location
+   * @param {string} direction
+   * @param {Map} map
+   */
+  static createEnemyFromString(name, location, direction, map) {
+    Enemy.createEnemy(name, new Vector(location[0], location[1]), new Direction(direction), map);
+  }
+
 }

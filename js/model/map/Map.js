@@ -32,79 +32,6 @@ var LEVEL_1 = [
   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
 ];
 
-var MAP_2 = [
-  "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-  "w                     wwww    w",
-  "w wwwwwwwwwwwwwwwwwww    w ww w",
-  "w w                 wwww wwww w",
-  "w w wwwwwwwwwwwwwww ww        w",
-  "w w w             w w  w      w",
-  "w w w wwwwwwwwwww w w      wwww",
-  "w w w     w     w w w         w",
-  "w w wwwwwwwwwww w w ww     ww w",
-  "w w             w w w       w w",
-  "w wwwwwwwwwwwwwww w w     w   w",
-  "w                 w w      wwww",
-  "wwwwwwwwwwwwwwwwwww wwwwww wwww",
-  "w     w  w  w   w             w",
-  "w www w     w w w        w    w",
-  "w w w w www w w w   w         w",
-  "w w w   w     wWw           w w",
-  "w w w www w wwWWWw      w     w",
-  "w w w w     wWWWWWw           w",
-  "w w w w w wwWWWWWWWw       w  w",
-  "w w w w   wWWWWWWWWWwww       w",
-  "w w w w wwWWWWWWWWWWW         w",
-  "w w w w wWWWWWWWWWWWWWw   ww ww",
-  "w w   wwWWWWWWWWWWWWWWWw   w ww",
-  "w wwwwwWWWWWWWWWWWWWWWWWw    ww",
-  "w   wwWWWWWWWWWWWWWWWWWWWw   ww",
-  "www                          ww",
-  "w wwwwWWWW           WWWWw ww w",
-  "w wWWWWWWW  w www w  WWWWw  w w",
-  "wWWWWWWWWW  w     w  WWWWWW   w",
-  "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
-];
-
-var TOKEN_2 = [
-  "                               ",
-  "                          tttt ",
-  "                          r  t ",
-  "                             t ",
-  "                               ",
-  "      ttttTtttt                 ",
-  "                               ",
-  "      ttt* *ttt                ",
-  "                               ",
-  "      ttttTtttt                ",
-  "                               ",
-  "                               ",
-  "                               ",
-  "       tt tt                   ",
-  "                               ",
-  "   T                           ",
-  "   t     ttt                   ",
-  "   t     t t                   ",
-  "   t   ttttt                   ",
-  "   t   t t     t               ",
-  "   t   ttt     t               ",
-  "   t   t     ttTtt             ",
-  "   t   T       t               ",
-  "               t               ",
-  "                               ",
-  "                               ",
-  "                               ",
-  " T                           T ",
-  " t                           t ",
-  "                               ",
-  "                               ",
-];
-
-var ENEMIES_2 = [["shark", new Vector(6,5), Direction.EAST()],
-                 ["shark", new Vector(8,7), Direction.EAST()],
-                 ["shark", new Vector(10,9), Direction.EAST()],
-                 ["shark", new Vector(12,11), Direction.EAST()]];
-
 class Map {
 
   /**
@@ -236,12 +163,14 @@ class Map {
 
   /**
    * Loads a map object from the file (fileName)
-   * @param {Array} mapGrid
-   * @param {Array} itemGrid
+   * @param {String} mapGrid
+   * @param {String} itemGrid
    * @param {Array} enemies
    * @return {Map}
    */
   static loadFromString(mapGrid, itemGrid, enemies) {
+    mapGrid = mapGrid.split('\n');
+    itemGrid = itemGrid.split('\n');
     var height = mapGrid.length;
     var width = mapGrid[0].length;
 
@@ -258,8 +187,7 @@ class Map {
 
     for (var e = 0; e < enemies.length; e++) {
       var enemy = enemies[e];
-      enemy = Enemy.createEnemy(enemy[0], enemy[1], enemy[2], myMap);
-      //console.log(enemy);
+      enemy = Enemy.createEnemyFromString(enemy.type, enemy.coordinate, enemy.direction, myMap);
     }
 
     return myMap;
